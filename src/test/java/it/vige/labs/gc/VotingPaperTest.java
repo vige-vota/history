@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import it.vige.labs.gc.rest.VotingPaperController;
-import it.vige.labs.gc.votingpapers.VotingPaper;
-import it.vige.labs.gc.votingpapers.VotingPapers;
+import it.vige.labs.gc.history.VotingPaper;
+import it.vige.labs.gc.history.VotingPapers;
+import it.vige.labs.gc.rest.HistoryController;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -23,7 +23,7 @@ public class VotingPaperTest {
 	private Logger logger = LoggerFactory.getLogger(VotingPaperTest.class);
 
 	@Autowired
-	private VotingPaperController votingPaperController;
+	private HistoryController votingPaperController;
 
 	@Test
 	public void votingPaper() throws IOException {

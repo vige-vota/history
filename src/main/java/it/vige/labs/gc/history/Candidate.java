@@ -1,4 +1,4 @@
-package it.vige.labs.gc.votingpapers;
+package it.vige.labs.gc.history;
 
 public class Candidate extends Identifier {
 

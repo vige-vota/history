@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.vige.labs.gc.votingpapers.VotingPapers;
+import it.vige.labs.gc.history.VotingPapers;
 
 @RestController
 @CrossOrigin(origins = "*")
-public class VotingPaperController {
+public class HistoryController {
 
 	public final static VotingPapers votingPapers = new VotingPapers();
 
-	@GetMapping(value = "/votingPapers")
-	public VotingPapers getVotingPapers() {
+	@GetMapping(value = "/history")
+	public VotingPapers getHistory() {
 		return generateVotingPapers();
 	}
 
-	@PostMapping(value = "/votingPapers")
-	public void setVotingPapers(@RequestBody VotingPapers postVotingPapers) {
+	@PostMapping(value = "/history")
+	public void setHistory(@RequestBody VotingPapers postVotingPapers) {
 		votingPapers.setVotingPapers(postVotingPapers.getVotingPapers());
 	}
 
