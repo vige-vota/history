@@ -18,16 +18,16 @@ import it.vige.labs.gc.rest.HistoryController;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class VotingPaperTest {
+public class HistoryTest {
 
-	private Logger logger = LoggerFactory.getLogger(VotingPaperTest.class);
+	private Logger logger = LoggerFactory.getLogger(HistoryTest.class);
 
 	@Autowired
-	private HistoryController votingPaperController;
+	private HistoryController historyController;
 
 	@Test
-	public void votingPaper() throws IOException {
-		VotingPapers votingPapers = votingPaperController.getVotingPapers();
+	public void history() throws IOException {
+		VotingPapers votingPapers = historyController.getHistory();
 		List<VotingPaper> list = votingPapers.getVotingPapers();
 		Assert.assertEquals("is admin", true, votingPapers.isAdmin());
 		Assert.assertEquals("size ok", 4, list.size());
