@@ -28,7 +28,9 @@ public class HistoryController {
 
 	@GetMapping(value = "/save")
 	public Voting save() {
-		return null;
+		Voting voting = new Voting();
+		voting.setAffluence(new Date());
+		return voting;
 	}
 
 	@PostMapping(value = "/configure")
@@ -38,7 +40,7 @@ public class HistoryController {
 
 	@GetMapping(value = "/getVotingPapers")
 	public VotingPapers getVotingPapers(@RequestParam Date date) {
-		return null;
+		return new VotingPapers();
 	}
 
 	@GetMapping(value = "/getVoting")
