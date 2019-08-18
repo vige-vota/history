@@ -1,47 +1,48 @@
 package it.vige.labs.gc.rest;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Date;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import it.vige.labs.gc.history.VotingPapers;
+import it.vige.labs.gc.result.Voting;
+import it.vige.labs.gc.votingpapers.VotingPapers;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class HistoryController {
 
-	public final static VotingPapers votingPapers = new VotingPapers();
-
-	@GetMapping(value = "/history")
-	public VotingPapers getHistory() {
-		return generateVotingPapers();
+	@GetMapping(value = "/prepare")
+	public boolean prepare(@RequestParam boolean start) {
+		return start;
 	}
 
-	@PostMapping(value = "/history")
-	public void setHistory(@RequestBody VotingPapers postVotingPapers) {
-		votingPapers.setVotingPapers(postVotingPapers.getVotingPapers());
+	@PostMapping(value = "/vote")
+	public StartVote vote(@RequestBody StartVote startVote) {
+		return startVote;
 	}
 
-	public static VotingPapers generateVotingPapers() {
-		if (votingPapers.getVotingPapers().size() == 0) {
-			InputStream jsonStream = Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("mock/config-app.json");
-			ObjectMapper objectMapper = new ObjectMapper();
-			try {
-				VotingPapers votingPapersFromJson = objectMapper.readValue(jsonStream, VotingPapers.class);
-				votingPapers.setVotingPapers(votingPapersFromJson.getVotingPapers());
-				votingPapers.setAdmin(votingPapersFromJson.isAdmin());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return votingPapers;
+	@GetMapping(value = "/save")
+	public Voting save() {
+		return null;
+	}
+
+	@PostMapping(value = "/configure")
+	public Affluences configure(Affluences affluences) {
+		return affluences;
+	}
+
+	@GetMapping(value = "/getVotingPapers")
+	public VotingPapers getVotingPapers(@RequestParam Date date) {
+		return null;
+	}
+
+	@GetMapping(value = "/getVoting")
+	public Voting getVoting(@RequestParam Date date) {
+		return null;
 	}
 }

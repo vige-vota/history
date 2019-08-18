@@ -1,4 +1,4 @@
-package it.vige.labs.gc.history;
+package it.vige.labs.gc.votingpapers;
 
 import java.util.ArrayList;
 import java.util.List;

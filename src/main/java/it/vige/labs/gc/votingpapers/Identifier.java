@@ -1,4 +1,4 @@
-package it.vige.labs.gc.history;
+package it.vige.labs.gc.votingpapers;
 
 public class Identifier {
 
