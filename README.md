@@ -11,7 +11,7 @@ Start the Java application with the following commands:
 ```
 to start a MongoDB instance. Then:
 ```
-java -jar build/libs/history-1.0.0-SNAPSHOT.jar --server.port=8280
+java -jar build/libs/history-1.0.0-SNAPSHOT.jar --server.port=8280 --spring.profiles.active=dev
 ```
 and open `http://localhost:8280/swagger-ui.html` in your browser to connect to the vote application.
 
@@ -21,9 +21,14 @@ java -jar build/libs/history-1.0.0-SNAPSHOT.jar --server.port=8643 --server.ssl.
 ```
 Before to start the HTTPS you need to create a keystore. You can use the following sample:
 ```
-keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /${your_path}/keystore.p12 -validity 3650 -dname "CN=history.vota.vige.it, OU=Vige, O=Vige, L=Rome, S=Italy, C=IT" -storepass secret -keypass secret
+keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /${your_path}/keystore.p12 -validity 3650 -dname "CN=vota-history.vige.it, OU=Vige, O=Vige, L=Rome, S=Italy, C=IT" -storepass secret -keypass secret
 ```
-moving the ${your_path} variable to your preferred path where put the keystore and open `https://history.vota.vige.it:8643/swagger-ui.html` in your browser to connect to the vote application.
+moving the ${your_path} variable to your preferred path where put the keystore and open `https://vota-history.vige.it:8643/swagger-ui.html` in your browser to connect to the vote application.
+
+Add the following DNS in your /etc/hosts file:
+```
+$IP_ADDRESS  vota-votingpapers.vige.it
+$IP_ADDRESS  vota-voting.vige.it
 
 ## Eclipse
 
@@ -42,4 +47,4 @@ To run the image use the command:
 ```
 docker run -d --name vota-history -p8643:8643 vige/vota-history
 ```
-Then open `https://history.vota.vige.it:8643/swagger-ui.html` to connect to the vote application
+Then open `https://vota-history.vige.it:8643/swagger-ui.html` to connect to the vote application
