@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+
 import it.vige.labs.gc.rest.Affluences;
 import it.vige.labs.gc.rest.HistoryController;
-import it.vige.labs.gc.rest.StartVote;
 import it.vige.labs.gc.result.Voting;
 import it.vige.labs.gc.votingpapers.VotingPapers;
 
@@ -31,16 +34,19 @@ public class HistoryTest {
 
 	@Test
 	public void history() throws IOException {
-		boolean closed = historyController.prepare(false);
-		Assert.assertFalse("the voting paper is saved in the database", closed);
+		clean();
+		Document found = (Document) historyController.execute(database -> {
+			MongoCollection<Document> collection = database.getCollection("votingPapers");
+			BasicDBObject searchQuery = new BasicDBObject();
+			searchQuery.put("id", 0);
+			return collection.find(searchQuery).first();
+		});
+		Assert.assertNull("all the dates", found);
+
 		VotingPapers votingPapers = historyController.getVotingPapers(new Date());
 		Assert.assertNotNull("voting papers is saved in database after the closing in the prepare service",
 				votingPapers);
 		logger.info(votingPapers + "");
-		StartVote startVote = new StartVote();
-		startVote.setStart(true);
-		StartVote started = historyController.vote(startVote);
-		Assert.assertTrue("the voting is immediately started", started.isStart());
 		Voting voting = historyController.getVoting(new Date());
 		Assert.assertNull("no voting for the current date, only previous dates", voting);
 		Date currentDate = new Date();
@@ -58,6 +64,16 @@ public class HistoryTest {
 		calendar.setTime(date);
 		calendar.add(Calendar.HOUR_OF_DAY, hours);
 		return calendar.getTime();
+	}
+
+	public void clean() {
+		historyController.execute(database -> {
+			MongoCollection<Document> collection = database.getCollection("configuration");
+			collection.deleteMany(new BasicDBObject());
+			collection = database.getCollection("votingPapers");
+			collection.deleteMany(new BasicDBObject());
+			return true;
+		});
 	}
 
 }
