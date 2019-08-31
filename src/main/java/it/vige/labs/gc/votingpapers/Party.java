@@ -13,6 +13,7 @@ public class Party extends Identifier {
 	}
 
 	public void setImage(String image) {
+		put("image", image);
 		this.image = image;
 	}
 
@@ -21,6 +22,7 @@ public class Party extends Identifier {
 	}
 
 	public void setCandidates(List<Candidate> candidates) {
+		put("candidates", candidates);
 		this.candidates = candidates;
 	}
 }

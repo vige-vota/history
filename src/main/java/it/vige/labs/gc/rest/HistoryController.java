@@ -1,19 +1,17 @@
 package it.vige.labs.gc.rest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.function.Function;
 
 import org.bson.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -32,10 +30,10 @@ import it.vige.labs.gc.votingpapers.VotingPapers;
 @CrossOrigin(origins = "*")
 public class HistoryController {
 
-	private Logger logger = LoggerFactory.getLogger(HistoryController.class);
-
 	private String DB_HOST = "localhost";
 	private int DB_PORT = 27017;
+
+	private DateFormat dayFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -49,46 +47,65 @@ public class HistoryController {
 	@Value("${votingpapers.port}")
 	private int votingpapersPort;
 
-	@GetMapping(value = "/save")
-	public Voting save() {
-		Voting voting = new Voting();
-		voting.setAffluence(new Date());
-		return voting;
-	}
+	@Value("${voting.scheme}")
+	private String votingScheme;
 
-	@PostMapping(value = "/configure")
-	public Affluences configure(Affluences affluences) {
+	@Value("${voting.host}")
+	private String votingHost;
+
+	@Value("${voting.port}")
+	private int votingPort;
+
+	@GetMapping(value = "/save")
+	public Date save() {
+		Date date = new Date();
+		Voting voting = new Voting();
+		voting.setAffluence(date);
 		execute(database -> {
-			MongoCollection<Document> collection = database.getCollection("configuration");
-			for (Date date : affluences.getAffluences()) {
-				Document document = new Document();
-				document.put("affluence", date);
-				collection.insertOne(document);
-			}
+			MongoCollection<Document> collection = database.getCollection("votingPapers");
+			Document document = new Document();
+			document.put("id", dayFormatter.format(date));
+			document.put("votingPaper", getVotingPapers());
+			collection.insertOne(document);
+
+			collection = database.getCollection("voting");
+			document = new Document();
+			document.put("id", date);
+			document.put("voting", getVoting());
+			collection.insertOne(document);
 			return "";
 		});
-		return affluences;
+		return date;
 	}
 
 	@GetMapping(value = "/getVotingPapers")
 	public VotingPapers getVotingPapers(@RequestParam Date date) {
-		@SuppressWarnings("unchecked")
-		List<Date> dates = (List<Date>) execute(database -> {
+		Document votingPapers = (Document)execute(database -> {
 			MongoCollection<Document> collection = database.getCollection("votingPapers");
 			BasicDBObject searchQuery = new BasicDBObject();
-			searchQuery.put("date", date);
+			searchQuery.put("id", dayFormatter.format(date));
 			Document found = collection.find(searchQuery).first();
-			return found.get("value");
+			if (found != null)
+				return found.get("votingPaper");
+			else
+				return null;
 		});
-		logger.info(dates + "");
-		return new VotingPapers();
+		return new VotingPapers(votingPapers);
 	}
 
 	@GetMapping(value = "/getVoting")
 	public Voting getVoting(@RequestParam Date date) {
-		VotingPapers votingPapers = getVotingPapers();
-		logger.info(votingPapers + "");
-		return null;
+		Document voting = (Document) execute(database -> {
+			MongoCollection<Document> collection = database.getCollection("voting");
+			BasicDBObject searchQuery = new BasicDBObject();
+			searchQuery.put("id", date);
+			Document found = collection.find(searchQuery).first();
+			if (found != null)
+				return found.get("voting");
+			else
+				return null;
+		});
+		return new Voting(voting);
 	}
 
 	public Object execute(Function<MongoDatabase, Object> function) {
@@ -106,5 +123,15 @@ public class HistoryController {
 				VotingPapers.class);
 		VotingPapers votingPapers = response.getBody();
 		return votingPapers;
+	}
+
+	private Voting getVoting() {
+		UriComponents uriComponents = UriComponentsBuilder.newInstance().scheme(votingScheme).host(votingHost)
+				.port(votingPort).path("/result").buildAndExpand();
+
+		ResponseEntity<Voting> response = restTemplate.exchange(uriComponents.toString(), HttpMethod.GET, null,
+				Voting.class);
+		Voting voting = response.getBody();
+		return voting;
 	}
 }

@@ -9,6 +9,7 @@ public class Electors extends Identifier {
 	}
 
 	public void setElectors(int electors) {
+		put("electors", electors);
 		this.electors = electors;
 	}
 }

@@ -21,6 +21,7 @@ public class VotingPaper extends Electors {
 	}
 
 	public void setBlankPapers(int blankPapers) {
+		put("blankPapers", blankPapers);
 		this.blankPapers = blankPapers;
 	}
 
@@ -33,6 +34,7 @@ public class VotingPaper extends Electors {
 	}
 
 	public void setMapGroups(Map<Integer, Group> mapGroups) {
+		put("mapGroups", mapGroups);
 		this.mapGroups = mapGroups;
 	}
 
@@ -45,6 +47,7 @@ public class VotingPaper extends Electors {
 	}
 
 	public void setMapParties(Map<Integer, Party> mapParties) {
+		put("mapParties", mapParties);
 		this.mapParties = mapParties;
 	}
 }

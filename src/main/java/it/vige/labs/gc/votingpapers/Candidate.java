@@ -11,6 +11,7 @@ public class Candidate extends Identifier {
 	}
 
 	public void setImage(String image) {
+		put("image", image);
 		this.image = image;
 	}
 
@@ -19,6 +20,7 @@ public class Candidate extends Identifier {
 	}
 
 	public void setSex(char sex) {
+		put("sex", sex);
 		this.sex = sex;
 	}
 

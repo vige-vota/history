@@ -21,6 +21,7 @@ public class VotingPaper extends Identifier {
 	}
 
 	public void setMaxCandidates(int maxCandidates) {
+		put("maxCandidates", maxCandidates);
 		this.maxCandidates = maxCandidates;
 	}
 

@@ -5,14 +5,29 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bson.Document;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Voting extends TotalElectors {
 
 	@JsonIgnore
 	private Map<Integer, VotingPaper> mapVotingPapers = new HashMap<Integer, VotingPaper>();
-	
+
 	private Date affluence;
+
+	public Voting() {
+
+	}
+
+	public Voting(Document voting) {
+		if (voting != null) {
+			@SuppressWarnings("unchecked")
+			Map<Integer, VotingPaper> mapVotingPapers = (Map<Integer, VotingPaper>) voting.get("votingPapers");
+			setMapVotingPapers(mapVotingPapers);
+			setAffluence((Date) voting.get("affluence"));
+		}
+	}
 
 	public Map<Integer, VotingPaper> getMapVotingPapers() {
 		return mapVotingPapers;
@@ -23,6 +38,7 @@ public class Voting extends TotalElectors {
 	}
 
 	public void setMapVotingPapers(Map<Integer, VotingPaper> mapVotingPapers) {
+		put("mapVotingPapers", mapVotingPapers);
 		this.mapVotingPapers = mapVotingPapers;
 	}
 
@@ -31,6 +47,7 @@ public class Voting extends TotalElectors {
 	}
 
 	public void setAffluence(Date affluence) {
+		put("affluence", affluence);
 		this.affluence = affluence;
 	}
 

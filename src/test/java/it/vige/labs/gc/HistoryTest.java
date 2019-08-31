@@ -37,26 +37,23 @@ public class HistoryTest {
 		clean();
 		Document found = (Document) historyController.execute(database -> {
 			MongoCollection<Document> collection = database.getCollection("votingPapers");
-			BasicDBObject searchQuery = new BasicDBObject();
-			searchQuery.put("id", 0);
-			return collection.find(searchQuery).first();
+			return collection.find().first();
 		});
-		Assert.assertNull("all the dates", found);
+		Assert.assertNull("is all cleaned", found);
 
+		historyController.save();
 		VotingPapers votingPapers = historyController.getVotingPapers(new Date());
-		Assert.assertNotNull("voting papers is saved in database after the closing in the prepare service",
+		Assert.assertNotNull("voting papers is saved",
 				votingPapers);
 		logger.info(votingPapers + "");
 		Voting voting = historyController.getVoting(new Date());
-		Assert.assertNull("no voting for the current date, only previous dates", voting);
+		Assert.assertNotNull("voting for the current date", voting);
 		Date currentDate = new Date();
-		Voting savedVoting = historyController.save();
-		Assert.assertEquals("saved voting to the following date", currentDate, savedVoting.getAffluence());
+		Date savedVoting = historyController.save();
+		Assert.assertEquals("saved voting to the following date", currentDate, savedVoting);
 		Affluences affluences = new Affluences();
 		affluences.setAffluences(
 				Arrays.asList(new Date[] { addHoursToDate(new Date(), 1), addHoursToDate(new Date(), 2) }));
-		Affluences configuredAffluences = historyController.configure(affluences);
-		Assert.assertEquals("configured two dates to save in database", affluences, configuredAffluences);
 	}
 
 	private Date addHoursToDate(Date date, int hours) {

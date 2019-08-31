@@ -20,6 +20,7 @@ public class Party extends Electors {
 	}
 
 	public void setMapCandidates(Map<Integer, Candidate> mapCandidates) {
+		put("mapCandidates", mapCandidates);
 		this.mapCandidates = mapCandidates;
 	}
 

@@ -1,6 +1,8 @@
 package it.vige.labs.gc.result;
 
-public class Identifier {
+import org.bson.Document;
+
+public class Identifier extends Document {
 
 	protected int id;
 
@@ -8,6 +10,7 @@ public class Identifier {
 	}
 	
 	public Identifier(int id) {
+		put("id", id);
 		this.id = id;
 	}
 
@@ -16,6 +19,7 @@ public class Identifier {
 	}
 
 	public void setId(int id) {
+		put("id", id);
 		this.id = id;
 	}
 	

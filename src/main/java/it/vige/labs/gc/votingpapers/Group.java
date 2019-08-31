@@ -15,6 +15,7 @@ public class Group extends Identifier {
 	}
 
 	public void setImage(String image) {
+		put("image", image);
 		this.image = image;
 	}
 
@@ -23,6 +24,7 @@ public class Group extends Identifier {
 	}
 
 	public void setParties(List<Party> parties) {
+		put("parties", parties);
 		this.parties = parties;
 	}
 
@@ -31,6 +33,7 @@ public class Group extends Identifier {
 	}
 
 	public void setSubtitle(String subtitle) {
+		put("subtitle", subtitle);
 		this.subtitle = subtitle;
 	}
 	

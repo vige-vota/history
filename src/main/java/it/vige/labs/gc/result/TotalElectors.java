@@ -1,6 +1,8 @@
 package it.vige.labs.gc.result;
 
-public class TotalElectors {
+import org.bson.Document;
+
+public class TotalElectors extends Document {
 
 	private int electors;
 
@@ -9,6 +11,7 @@ public class TotalElectors {
 	}
 
 	public void setElectors(int electors) {
+		put("electors", electors);
 		this.electors = electors;
 	}
 }

@@ -20,6 +20,7 @@ public class Group extends Electors {
 	}
 
 	public void setMapParties(Map<Integer, Party> mapParties) {
+		put("mapParties", mapParties);
 		this.mapParties = mapParties;
 	}
 
