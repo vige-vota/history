@@ -1,6 +1,8 @@
 package it.vige.labs.gc;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,10 +19,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 
 import it.vige.labs.gc.rest.Affluences;
 import it.vige.labs.gc.rest.HistoryController;
+import it.vige.labs.gc.result.Group;
+import it.vige.labs.gc.result.Party;
 import it.vige.labs.gc.result.Voting;
+import it.vige.labs.gc.result.VotingPaper;
 import it.vige.labs.gc.votingpapers.VotingPapers;
 
 @RunWith(SpringRunner.class)
@@ -28,6 +34,8 @@ import it.vige.labs.gc.votingpapers.VotingPapers;
 public class HistoryTest {
 
 	private Logger logger = LoggerFactory.getLogger(HistoryTest.class);
+
+	private DateFormat dayFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
 	@Autowired
 	private HistoryController historyController;
@@ -43,8 +51,7 @@ public class HistoryTest {
 
 		historyController.save();
 		VotingPapers votingPapers = historyController.getVotingPapers(new Date());
-		Assert.assertNotNull("voting papers is saved",
-				votingPapers);
+		Assert.assertNotNull("voting papers is saved", votingPapers);
 		logger.info(votingPapers + "");
 		Voting voting = historyController.getVoting(new Date());
 		Assert.assertNotNull("voting for the current date", voting);
@@ -65,12 +72,77 @@ public class HistoryTest {
 
 	public void clean() {
 		historyController.execute(database -> {
-			MongoCollection<Document> collection = database.getCollection("configuration");
+			MongoCollection<Document> collection = database.getCollection("voting");
 			collection.deleteMany(new BasicDBObject());
 			collection = database.getCollection("votingPapers");
 			collection.deleteMany(new BasicDBObject());
 			return true;
 		});
+	}
+
+	public void addMock(VotingPapers votingPapers) {
+		historyController.execute(database -> {
+			Date date = createDate(2000, 5, 10, 3, 25, 45);
+			addVotingPaper(database, votingPapers, date, 43, 7299, 5, 67777, 67, 777, 12);
+			date = createDate(2001, 5, 20, 4, 25, 45);
+			addVotingPaper(database, votingPapers, date, 41, 7899, 5, 57777, 67, 7771, 121);
+			date = createDate(2001, 5, 20, 19, 25, 45);
+			addVotingPaper(database, votingPapers, date, 46, 7899, 5, 67777, 68, 777, 122);
+			date = createDate(2003, 6, 17, 4, 25, 45);
+			addVotingPaper(database, votingPapers, date, 65, 7899, 5, 47777, 67, 7772, 12);
+			date = createDate(2003, 6, 17, 19, 25, 45);
+			addVotingPaper(database, votingPapers, date, 47, 7899, 5, 77777, 69, 777, 123);
+			date = createDate(2005, 8, 10, 4, 25, 45);
+			addVotingPaper(database, votingPapers, date, 75, 7899, 5, 37777, 70, 7773, 12);
+			date = createDate(2005, 8, 10, 19, 25, 45);
+			addVotingPaper(database, votingPapers, date, 48, 7899, 5, 87777, 71, 777, 124);
+			date = createDate(2007, 10, 13, 4, 25, 45);
+			addVotingPaper(database, votingPapers, date, 85, 7899, 5, 27777, 72, 7774, 125);
+			date = createDate(2008, 10, 13, 19, 25, 45);
+			addVotingPaper(database, votingPapers, date, 48, 7899, 5, 97777, 73, 7777, 126);
+			date = createDate(2010, 1, 10, 4, 35, 45);
+			addVotingPaper(database, votingPapers, date, 85, 7899, 5, 17777, 74, 777, 127);
+			date = createDate(2010, 1, 10, 19, 25, 45);
+			addVotingPaper(database, votingPapers, date, 85, 7899, 5, 27777, 75, 7774, 129);
+			return true;
+		});
+	}
+
+	private void addVotingPaper(MongoDatabase database, VotingPapers votingPapers, Date date, int partyElectors,
+			int groupElectors, int blankPapers, int votingPaperElectors, int partiesId, int groupsId,
+			int votingPapersId) {
+
+		MongoCollection<Document> collection = database.getCollection("votingPapers");
+		Document document = new Document();
+		document.put("id", dayFormatter.format(date));
+		document.put("votingPaper", votingPapers);
+		collection.insertOne(document);
+
+		collection = database.getCollection("voting");
+		document = new Document();
+		document.put("id", date);
+		Voting voting = new Voting();
+
+		Party party = new Party();
+		party.setElectors(partyElectors);
+		Group group = new Group();
+		group.setElectors(groupElectors);
+		VotingPaper votingPaper = new VotingPaper();
+		votingPaper.setBlankPapers(blankPapers);
+		votingPaper.setElectors(votingPaperElectors);
+		votingPaper.getMapParties().put(partiesId, party);
+		votingPaper.getMapGroups().put(groupsId, group);
+		voting.getMapVotingPapers().put(votingPapersId, votingPaper);
+		document.put("voting", voting);
+		collection.insertOne(document);
+	}
+
+	private Date createDate(int year, int month, int day, int hour, int minute, int second) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(0);
+		cal.set(year, month, day, hour, minute, second);
+		Date date = cal.getTime();
+		return date;
 	}
 
 }
