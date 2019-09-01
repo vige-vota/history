@@ -23,6 +23,7 @@ import com.mongodb.client.MongoDatabase;
 
 import it.vige.labs.gc.rest.Affluences;
 import it.vige.labs.gc.rest.HistoryController;
+import it.vige.labs.gc.result.Candidate;
 import it.vige.labs.gc.result.Group;
 import it.vige.labs.gc.result.Party;
 import it.vige.labs.gc.result.Voting;
@@ -53,6 +54,7 @@ public class HistoryTest {
 		VotingPapers votingPapers = historyController.getVotingPapers(new Date());
 		Assert.assertNotNull("voting papers is saved", votingPapers);
 		logger.info(votingPapers + "");
+		addMock(votingPapers);
 		Voting voting = historyController.getVoting(new Date());
 		Assert.assertNotNull("voting for the current date", voting);
 		Date currentDate = new Date();
@@ -83,34 +85,34 @@ public class HistoryTest {
 	public void addMock(VotingPapers votingPapers) {
 		historyController.execute(database -> {
 			Date date = createDate(2000, 5, 10, 3, 25, 45);
-			addVotingPaper(database, votingPapers, date, 43, 7299, 5, 67777, 67, 777, 12);
+			addVotingPaper(database, votingPapers, date, 23, 57, 43, 7299, 5, 67777, 67, 777, 12);
 			date = createDate(2001, 5, 20, 4, 25, 45);
-			addVotingPaper(database, votingPapers, date, 41, 7899, 5, 57777, 67, 7771, 121);
+			addVotingPaper(database, votingPapers, date, 45, 99, 41, 7899, 5, 57777, 67, 7771, 121);
 			date = createDate(2001, 5, 20, 19, 25, 45);
-			addVotingPaper(database, votingPapers, date, 46, 7899, 5, 67777, 68, 777, 122);
+			addVotingPaper(database, votingPapers, date, 22, 44, 46, 7899, 5, 67777, 68, 777, 122);
 			date = createDate(2003, 6, 17, 4, 25, 45);
-			addVotingPaper(database, votingPapers, date, 65, 7899, 5, 47777, 67, 7772, 12);
+			addVotingPaper(database, votingPapers, date, 33, 55, 65, 7899, 5, 47777, 67, 7772, 12);
 			date = createDate(2003, 6, 17, 19, 25, 45);
-			addVotingPaper(database, votingPapers, date, 47, 7899, 5, 77777, 69, 777, 123);
+			addVotingPaper(database, votingPapers, date, 12, 98, 47, 7899, 5, 77777, 69, 777, 123);
 			date = createDate(2005, 8, 10, 4, 25, 45);
-			addVotingPaper(database, votingPapers, date, 75, 7899, 5, 37777, 70, 7773, 12);
+			addVotingPaper(database, votingPapers, date, 45, 99, 75, 7899, 5, 37777, 70, 7773, 12);
 			date = createDate(2005, 8, 10, 19, 25, 45);
-			addVotingPaper(database, votingPapers, date, 48, 7899, 5, 87777, 71, 777, 124);
+			addVotingPaper(database, votingPapers, date, 65, 32, 48, 7899, 5, 87777, 71, 777, 124);
 			date = createDate(2007, 10, 13, 4, 25, 45);
-			addVotingPaper(database, votingPapers, date, 85, 7899, 5, 27777, 72, 7774, 125);
+			addVotingPaper(database, votingPapers, date, 88, 67, 85, 7899, 5, 27777, 72, 7774, 125);
 			date = createDate(2008, 10, 13, 19, 25, 45);
-			addVotingPaper(database, votingPapers, date, 48, 7899, 5, 97777, 73, 7777, 126);
+			addVotingPaper(database, votingPapers, date, 76, 3, 48, 7899, 5, 97777, 73, 7777, 126);
 			date = createDate(2010, 1, 10, 4, 35, 45);
-			addVotingPaper(database, votingPapers, date, 85, 7899, 5, 17777, 74, 777, 127);
+			addVotingPaper(database, votingPapers, date, 99, 6, 85, 7899, 5, 17777, 74, 777, 127);
 			date = createDate(2010, 1, 10, 19, 25, 45);
-			addVotingPaper(database, votingPapers, date, 85, 7899, 5, 27777, 75, 7774, 129);
+			addVotingPaper(database, votingPapers, date, 124, 12, 85, 7899, 5, 27777, 75, 7774, 129);
 			return true;
 		});
 	}
 
-	private void addVotingPaper(MongoDatabase database, VotingPapers votingPapers, Date date, int partyElectors,
-			int groupElectors, int blankPapers, int votingPaperElectors, int partiesId, int groupsId,
-			int votingPapersId) {
+	private void addVotingPaper(MongoDatabase database, VotingPapers votingPapers, Date date, int candidate1Electors,
+			int candidate2Electors, int partyElectors, int groupElectors, int blankPapers, int votingPaperElectors,
+			int partiesId, int groupsId, int votingPapersId) {
 
 		MongoCollection<Document> collection = database.getCollection("votingPapers");
 		Document document = new Document();
@@ -133,6 +135,12 @@ public class HistoryTest {
 		votingPaper.getMapParties().put(partiesId, party);
 		votingPaper.getMapGroups().put(groupsId, group);
 		voting.getMapVotingPapers().put(votingPapersId, votingPaper);
+		Candidate candidate1 = new Candidate();
+		candidate1.setElectors(candidate1Electors);
+		party.getCandidates().add(candidate1);
+		Candidate candidate2 = new Candidate();
+		candidate2.setElectors(candidate2Electors);
+		party.getCandidates().add(candidate2);
 		document.put("voting", voting);
 		collection.insertOne(document);
 	}
