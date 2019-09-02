@@ -33,7 +33,9 @@ public class HistoryController {
 	private String DB_HOST = "localhost";
 	private int DB_PORT = 27017;
 
-	private DateFormat dayFormatter = new SimpleDateFormat("dd-MM-yyyy");
+	public final static DateFormat dayFormatter = new SimpleDateFormat("dd-MM-yyyy");
+
+	public final static DateFormat hourFormatter = new SimpleDateFormat("dd-MM-yyyy:HH-mm-ss");
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -70,7 +72,7 @@ public class HistoryController {
 
 			collection = database.getCollection("voting");
 			document = new Document();
-			document.put("id", date);
+			document.put("id", hourFormatter.format(date));
 			document.put("voting", getVoting());
 			collection.insertOne(document);
 			return "";
@@ -98,7 +100,7 @@ public class HistoryController {
 		Document voting = (Document) execute(database -> {
 			MongoCollection<Document> collection = database.getCollection("voting");
 			BasicDBObject searchQuery = new BasicDBObject();
-			searchQuery.put("id", date);
+			searchQuery.put("id", hourFormatter.format(date));
 			Document found = collection.find(searchQuery).first();
 			if (found != null)
 				return found.get("voting");

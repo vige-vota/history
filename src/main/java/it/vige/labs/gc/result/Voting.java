@@ -3,6 +3,7 @@ package it.vige.labs.gc.result;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
@@ -23,8 +24,8 @@ public class Voting extends TotalElectors {
 	public Voting(Document voting) {
 		if (voting != null) {
 			@SuppressWarnings("unchecked")
-			Map<Integer, VotingPaper> mapVotingPapers = (Map<Integer, VotingPaper>) voting.get("votingPapers");
-			setMapVotingPapers(mapVotingPapers);
+			List<VotingPaper> votingPapers = (List<VotingPaper>) voting.get("votingPapers");
+			votingPapers.forEach(votingPaper -> getMapVotingPapers().put(votingPaper.getId(), votingPaper));
 			setAffluence((Date) voting.get("affluence"));
 		}
 	}
