@@ -80,7 +80,7 @@ public class HistoryController {
 		return date;
 	}
 
-	@GetMapping(value = "/getVotingPapers")
+	@GetMapping(value = "/votingPapers")
 	public VotingPapers getVotingPapers(@RequestParam Date date) {
 		Document votingPapers = (Document)execute(database -> {
 			MongoCollection<Document> collection = database.getCollection("votingPapers");
