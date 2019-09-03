@@ -8,11 +8,12 @@ import java.util.function.Function;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
@@ -80,9 +81,9 @@ public class HistoryController {
 		return date;
 	}
 
-	@GetMapping(value = "/votingPapers")
-	public VotingPapers getVotingPapers(@RequestParam Date date) {
-		Document votingPapers = (Document)execute(database -> {
+	@GetMapping(value = "/votingPapers/{date}")
+	public VotingPapers getVotingPapers(@PathVariable("date") @DateTimeFormat(pattern = "ddMMyyyy") Date date) {
+		Document votingPapers = (Document) execute(database -> {
 			MongoCollection<Document> collection = database.getCollection("votingPapers");
 			BasicDBObject searchQuery = new BasicDBObject();
 			searchQuery.put("id", dayFormatter.format(date));
@@ -95,8 +96,8 @@ public class HistoryController {
 		return new VotingPapers(votingPapers);
 	}
 
-	@GetMapping(value = "/getVoting")
-	public Voting getVoting(@RequestParam Date date) {
+	@GetMapping(value = "/getVoting/{date}")
+	public Voting getVoting(@PathVariable("date") @DateTimeFormat(pattern = "ddMMyyyy") Date date) {
 		Document voting = (Document) execute(database -> {
 			MongoCollection<Document> collection = database.getCollection("voting");
 			BasicDBObject searchQuery = new BasicDBObject();
