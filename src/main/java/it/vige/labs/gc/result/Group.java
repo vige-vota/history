@@ -9,9 +9,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Group extends Electors {
 
 	@JsonIgnore
-	private Map<Integer, Party> mapParties = new HashMap<Integer, Party>();
+	private Map<String, Party> mapParties = new HashMap<String, Party>();
 
-	public Map<Integer, Party> getMapParties() {
+	public Map<String, Party> getMapParties() {
+		if (mapParties != null)
+			put("mapParties", mapParties);
 		return mapParties;
 	}
 
@@ -19,7 +21,7 @@ public class Group extends Electors {
 		return mapParties.values();
 	}
 
-	public void setMapParties(Map<Integer, Party> mapParties) {
+	public void setMapParties(Map<String, Party> mapParties) {
 		put("mapParties", mapParties);
 		this.mapParties = mapParties;
 	}

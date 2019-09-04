@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Voting extends TotalElectors {
 
 	@JsonIgnore
-	private Map<Integer, VotingPaper> mapVotingPapers = new HashMap<Integer, VotingPaper>();
+	private Map<String, VotingPaper> mapVotingPapers = new HashMap<String, VotingPaper>();
 
 	private Date affluence;
 
@@ -25,12 +25,14 @@ public class Voting extends TotalElectors {
 		if (voting != null) {
 			@SuppressWarnings("unchecked")
 			List<VotingPaper> votingPapers = (List<VotingPaper>) voting.get("votingPapers");
-			votingPapers.forEach(votingPaper -> getMapVotingPapers().put(votingPaper.getId(), votingPaper));
+			votingPapers.forEach(votingPaper -> getMapVotingPapers().put(votingPaper.getId() + "", votingPaper));
 			setAffluence((Date) voting.get("affluence"));
 		}
 	}
 
-	public Map<Integer, VotingPaper> getMapVotingPapers() {
+	public Map<String, VotingPaper> getMapVotingPapers() {
+		if (mapVotingPapers != null)
+			put("mapVotingPapers", mapVotingPapers);
 		return mapVotingPapers;
 	}
 
@@ -38,7 +40,7 @@ public class Voting extends TotalElectors {
 		return mapVotingPapers.values();
 	}
 
-	public void setMapVotingPapers(Map<Integer, VotingPaper> mapVotingPapers) {
+	public void setMapVotingPapers(Map<String, VotingPaper> mapVotingPapers) {
 		put("mapVotingPapers", mapVotingPapers);
 		this.mapVotingPapers = mapVotingPapers;
 	}
