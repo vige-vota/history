@@ -4,54 +4,91 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.bson.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties("mapGroups,mapParties")
 public class VotingPaper extends Electors {
 
-	@JsonIgnore
-	private Map<String, Group> mapGroups = new HashMap<String, Group>();
-
-	@JsonIgnore
-	private Map<String, Party> mapParties = new HashMap<String, Party>();
-	
-	private int blankPapers;
-
 	public int getBlankPapers() {
-		return blankPapers;
+		return getInteger("blankPapers");
 	}
 
 	public void setBlankPapers(int blankPapers) {
 		put("blankPapers", blankPapers);
-		this.blankPapers = blankPapers;
 	}
 
 	public Map<String, Group> getMapGroups() {
-		if (mapGroups != null)
+		@SuppressWarnings("unchecked")
+		Map<String, Group> mapGroups = (Map<String, Group>) get("mapGroups");
+		if (mapGroups == null) {
+			mapGroups = new HashMap<String, Group>();
 			put("mapGroups", mapGroups);
+		}
 		return mapGroups;
 	}
 
 	public Collection<Group> getGroups() {
-		return mapGroups.values();
+		@SuppressWarnings("unchecked")
+		Collection<Group> groups = (Collection<Group>) get("groups");
+		if (groups == null) {
+			groups = getMapGroups().values();
+			put("groups", groups);
+		}
+		return groups;
+	}
+
+	public void setGroups(Collection<Group> groups) {
+		put("groups", groups);
 	}
 
 	public void setMapGroups(Map<String, Group> mapGroups) {
 		put("mapGroups", mapGroups);
-		this.mapGroups = mapGroups;
 	}
 
 	public Map<String, Party> getMapParties() {
-		if (mapParties != null)
+		@SuppressWarnings("unchecked")
+		Map<String, Party> mapParties = (Map<String, Party>) get("mapParties");
+		if (mapParties == null) {
+			mapParties = new HashMap<String, Party>();
 			put("mapParties", mapParties);
+		}
 		return mapParties;
 	}
 
 	public Collection<Party> getParties() {
-		return mapParties.values();
+		@SuppressWarnings("unchecked")
+		Collection<Party> parties = (Collection<Party>) get("parties");
+		if (parties == null) {
+			parties = getMapParties().values();
+			put("parties", parties);
+		}
+		return parties;
+	}
+
+	public void setParties(Collection<Party> parties) {
+		put("parties", parties);
 	}
 
 	public void setMapParties(Map<String, Party> mapParties) {
 		put("mapParties", mapParties);
-		this.mapParties = mapParties;
+	}
+
+	public static void fill(Document document) {
+		@SuppressWarnings("unchecked")
+		Collection<Document> votingPapers = (Collection<Document>) document.get("votingPapers");
+		votingPapers.forEach(votingPaper -> {
+			Document groups = (Document) votingPaper.get("mapGroups");
+			if (groups != null) {
+				votingPaper.put("groups", groups.values());
+				Group.fill(votingPaper);
+			}
+			Document parties = (Document) votingPaper.get("mapParties");
+			if (parties != null) {
+				votingPaper.put("parties", parties.values());
+				Party.fill(votingPaper);
+			}
+		});
 	}
 }

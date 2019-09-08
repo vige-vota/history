@@ -115,6 +115,7 @@ public class HistoryTest {
 		votingPaper.getMapParties().put(partiesId + "", party);
 		votingPaper.getMapGroups().put(groupsId + "", group);
 		voting.getMapVotingPapers().put(votingPapersId + "", votingPaper);
+		voting.setAffluence(date);
 		Candidate candidate1 = new Candidate();
 		candidate1.setElectors(candidate1Electors);
 		party.getMapCandidates().put(candidates1Id + "", candidate1);

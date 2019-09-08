@@ -4,14 +4,11 @@ import org.bson.Document;
 
 public class TotalElectors extends Document {
 
-	private int electors;
-
 	public int getElectors() {
-		return electors;
+		return getInteger("electors");
 	}
 
 	public void setElectors(int electors) {
 		put("electors", electors);
-		this.electors = electors;
 	}
 }

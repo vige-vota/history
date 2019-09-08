@@ -3,17 +3,17 @@ package it.vige.labs.gc.votingpapers;
 import java.util.List;
 
 public class VotingPaper extends Identifier {
-    
-    private int maxCandidates;
-    
+
+	private int maxCandidates;
+
 	private String color;
-	
+
 	private String type;
-	
+
 	private boolean disjointed;
-	
+
 	private List<Group> groups;
-	
+
 	private List<Party> parties;
 
 	public int getMaxCandidates() {
@@ -21,7 +21,6 @@ public class VotingPaper extends Identifier {
 	}
 
 	public void setMaxCandidates(int maxCandidates) {
-		put("maxCandidates", maxCandidates);
 		this.maxCandidates = maxCandidates;
 	}
 

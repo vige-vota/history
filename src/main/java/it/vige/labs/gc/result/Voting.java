@@ -3,55 +3,57 @@ package it.vige.labs.gc.result;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties("mapVotingPapers")
 public class Voting extends TotalElectors {
 
-	@JsonIgnore
-	private Map<String, VotingPaper> mapVotingPapers = new HashMap<String, VotingPaper>();
-
-	private Date affluence;
-
-	public Voting() {
-
-	}
-
-	public Voting(Document voting) {
-		if (voting != null) {
-			@SuppressWarnings("unchecked")
-			List<VotingPaper> votingPapers = (List<VotingPaper>) voting.get("votingPapers");
-			votingPapers.forEach(votingPaper -> getMapVotingPapers().put(votingPaper.getId() + "", votingPaper));
-			setAffluence((Date) voting.get("affluence"));
-		}
-	}
-
 	public Map<String, VotingPaper> getMapVotingPapers() {
-		if (mapVotingPapers != null)
+		@SuppressWarnings("unchecked")
+		Map<String, VotingPaper> mapVotingPapers = (Map<String, VotingPaper>) get("mapVotingPapers");
+		if (mapVotingPapers == null) {
+			mapVotingPapers = new HashMap<String, VotingPaper>();
 			put("mapVotingPapers", mapVotingPapers);
+		}
 		return mapVotingPapers;
 	}
 
 	public Collection<VotingPaper> getVotingPapers() {
-		return mapVotingPapers.values();
+		@SuppressWarnings("unchecked")
+		Collection<VotingPaper> votingPapers = (Collection<VotingPaper>) get("votingPapers");
+		if (votingPapers == null) {
+			votingPapers = getMapVotingPapers().values();
+			put("votingPapers", votingPapers);
+		}
+		return votingPapers;
 	}
 
 	public void setMapVotingPapers(Map<String, VotingPaper> mapVotingPapers) {
 		put("mapVotingPapers", mapVotingPapers);
-		this.mapVotingPapers = mapVotingPapers;
+	}
+
+	public void setVotingPapers(Collection<VotingPaper> votingPapers) {
+		put("votingPapers", votingPapers);
 	}
 
 	public Date getAffluence() {
-		return affluence;
+		return getDate("affluence");
 	}
 
 	public void setAffluence(Date affluence) {
 		put("affluence", affluence);
-		this.affluence = affluence;
+	}
+
+	public static void fill(Document document) {
+		Document votingPapers = (Document) document.get("mapVotingPapers");
+		if (votingPapers != null) {
+			document.put("votingPapers", votingPapers.values());
+			VotingPaper.fill(document);
+		}
 	}
 
 }

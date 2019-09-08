@@ -4,37 +4,30 @@ import java.util.List;
 
 public class Group extends Identifier {
 
-	private String image;
-	
-	private String subtitle;
-	
-	private List<Party> parties;
-
 	public String getImage() {
-		return image;
+		return getString("image");
 	}
 
 	public void setImage(String image) {
 		put("image", image);
-		this.image = image;
 	}
 
 	public List<Party> getParties() {
+		@SuppressWarnings("unchecked")
+		List<Party> parties = (List<Party>) get("parties");
 		return parties;
 	}
 
 	public void setParties(List<Party> parties) {
 		put("parties", parties);
-		this.parties = parties;
 	}
 
 	public String getSubtitle() {
-		return subtitle;
+		return getString("subtitle");
 	}
 
 	public void setSubtitle(String subtitle) {
 		put("subtitle", subtitle);
-		this.subtitle = subtitle;
 	}
-	
+
 }

@@ -1,15 +1,14 @@
 package it.vige.labs.gc.result;
 
-public class Electors extends Identifier {
+import org.bson.Document;
 
-	private int electors;
+public class Electors extends Document {
 
 	public int getElectors() {
-		return electors;
+		return getInteger("electors");
 	}
 
 	public void setElectors(int electors) {
 		put("electors", electors);
-		this.electors = electors;
 	}
 }

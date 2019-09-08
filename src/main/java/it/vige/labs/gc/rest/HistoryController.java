@@ -1,5 +1,6 @@
 package it.vige.labs.gc.rest;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
 import com.mongodb.MongoClient;
 
@@ -35,6 +39,8 @@ public class HistoryController {
 
 	private String DB_HOST = "localhost";
 	private int DB_PORT = 27017;
+
+	private Logger logger = LoggerFactory.getLogger(HistoryController.class);
 
 	public final static DateFormat dayFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -64,7 +70,7 @@ public class HistoryController {
 	@GetMapping(value = "/save")
 	public Date save() {
 		Date date = new Date();
-		Voting voting = new Voting();
+		Voting voting = getVoting();
 		voting.setAffluence(date);
 		template(mongoTemplate -> {
 			Document document = new Document();
@@ -74,7 +80,7 @@ public class HistoryController {
 
 			document = new Document();
 			document.put("id", hourFormatter.format(date));
-			document.put("voting", getVoting());
+			document.put("voting", voting);
 			mongoTemplate.insert(document, "voting");
 			return "";
 		});
@@ -83,30 +89,47 @@ public class HistoryController {
 
 	@GetMapping(value = "/votingPapers/{date}")
 	public VotingPapers getVotingPapers(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-		Document votingPapers = (Document) template(mongoTemplate -> {
+		VotingPapers votingPapers = (VotingPapers) template(mongoTemplate -> {
 			Query searchQuery = new Query();
 			searchQuery.addCriteria(Criteria.where("id").is(dayFormatter.format(date)));
 			Document found = mongoTemplate.findOne(searchQuery, Document.class, "votingPapers");
-			if (found != null)
-				return found.get("votingPaper");
-			else
+			if (found != null) {
+				Document document = (Document) found.get("votingPaper");
+				ObjectMapper mapper = new ObjectMapper();
+				VotingPapers result = null;
+				try {
+					result = mapper.readValue(document.toJson(), VotingPapers.class);
+				} catch (IOException e) {
+					logger.error(e.getMessage());
+				}
+				return result;
+			} else
 				return null;
 		});
-		return new VotingPapers(votingPapers);
+		return votingPapers;
 	}
 
 	@GetMapping(value = "/result/{date}")
 	public Voting getResult(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-		Document voting = (Document) template(mongoTemplate -> {
+		Voting voting = (Voting) template(mongoTemplate -> {
 			Query searchQuery = new Query();
 			searchQuery.addCriteria(Criteria.where("id").regex(dayFormatter.format(date)));
 			List<Document> found = mongoTemplate.find(searchQuery, Document.class, "voting");
-			if (found != null && !found.isEmpty())
-				return Iterables.getLast(found).get("voting");
-			else
+			if (found != null && !found.isEmpty()) {
+				Document document = (Document) Iterables.getLast(found).get("voting");
+				ObjectMapper mapper = new ObjectMapper();
+				Voting result = null;
+				try {
+					Voting.fill(document);
+					result = mapper.readValue(document.toJson(), Voting.class);
+				} catch (IOException e) {
+					logger.error(e.getMessage());
+				}
+				return result;
+			} else
 				return null;
 		});
-		return new Voting(voting);
+		return voting;
 	}
 
 	public Object template(Function<MongoTemplate, Object> function) {
