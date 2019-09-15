@@ -66,35 +66,35 @@ public class HistoryTest {
 
 	public void addMock(VotingPapers votingPapers) {
 		historyController.template(mongoTemplate -> {
-			Date date = createDate(2000, 5, 10, 3, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 23, 57, 43, 7299, 5, 67777, 1, 2, 67, 777, 12);
-			date = createDate(2001, 5, 20, 4, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 45, 99, 41, 7899, 5, 57777, 1, 2, 67, 7771, 121);
-			date = createDate(2001, 5, 20, 19, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 22, 44, 46, 7899, 5, 67777, 1, 2, 68, 777, 122);
-			date = createDate(2003, 6, 17, 4, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 33, 55, 65, 7899, 5, 47777, 1, 2, 67, 7772, 12);
-			date = createDate(2003, 6, 17, 19, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 12, 98, 47, 7899, 5, 77777, 1, 2, 69, 777, 123);
-			date = createDate(2005, 8, 10, 4, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 45, 99, 75, 7899, 5, 37777, 1, 2, 70, 7773, 12);
-			date = createDate(2005, 8, 10, 19, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 65, 32, 48, 7899, 5, 87777, 1, 2, 71, 777, 124);
-			date = createDate(2007, 10, 13, 4, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 88, 67, 85, 7899, 5, 27777, 1, 2, 72, 7774, 125);
-			date = createDate(2008, 10, 13, 19, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 76, 3, 48, 7899, 5, 97777, 1, 2, 73, 7777, 126);
-			date = createDate(2010, 1, 10, 4, 35, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 99, 6, 85, 7899, 5, 17777, 1, 2, 74, 777, 127);
-			date = createDate(2010, 1, 10, 19, 25, 45);
-			addVotingPaper(mongoTemplate, votingPapers, date, 124, 12, 85, 7899, 5, 27777, 1, 2, 75, 7774, 129);
+			Date date = createDate(2000, 6, 10, 3, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 23, 57, 43, 7299, 5, 67777, 14, 15, 13, 12, 11);
+			date = createDate(2001, 6, 20, 4, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 45, 99, 41, 7899, 5, 57777, 14, 15, 13, 12, 11);
+			date = createDate(2001, 6, 20, 19, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 22, 44, 46, 7899, 5, 67777, 14, 15, 13, 12, 11);
+			date = createDate(2003, 7, 17, 4, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 33, 55, 65, 7899, 5, 47777, 17, 18, 13, 12, 11);
+			date = createDate(2003, 7, 17, 19, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 12, 98, 47, 7899, 5, 77777, 17, 18, 13, 12, 11);
+			date = createDate(2005, 9, 10, 4, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 45, 99, 75, 7899, 5, 37777, 17, 18, 13, 12, 11);
+			date = createDate(2005, 9, 10, 19, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 65, 32, 48, 7899, 5, 87777, 132, 133, 123, -1, 121);
+			date = createDate(2007, 11, 13, 4, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 88, 67, 85, 7899, 5, 27777, 132, 133, 123, -1, 121);
+			date = createDate(2008, 11, 13, 19, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 76, 3, 48, 7899, 5, 97777, 132, 133, 123, -1, 121);
+			date = createDate(2010, 2, 10, 4, 35, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 99, 6, 85, 7899, 5, 17777, 132, 133, 123, -1, 121);
+			date = createDate(2010, 2, 10, 19, 25, 45);
+			addVotingPaper(mongoTemplate, votingPapers, date, 124, 12, 85, 7899, 5, 27777, 134, 135, 123, -1, 121);
 			return true;
 		});
 	}
 
 	private void addVotingPaper(MongoTemplate template, VotingPapers votingPapers, Date date, int candidate1Electors,
 			int candidate2Electors, int partyElectors, int groupElectors, int blankPapers, int votingPaperElectors,
-			int candidates1Id, int candidates2Id, int partiesId, int groupsId, int votingPapersId) {
+			int candidate1Id, int candidate2Id, int partyId, int groupId, int votingPaperId) {
 
 		Document document = new Document();
 		document.put("id", HistoryController.dayFormatter.format(date));
@@ -106,22 +106,30 @@ public class HistoryTest {
 		Voting voting = new Voting();
 
 		Party party = new Party();
+		party.setId(partyId);
 		party.setElectors(partyElectors);
 		Group group = new Group();
+		group.setId(groupId);
 		group.setElectors(groupElectors);
+		group.getMapParties().put(partyId + "", party);
 		VotingPaper votingPaper = new VotingPaper();
+		votingPaper.setId(votingPaperId);
 		votingPaper.setBlankPapers(blankPapers);
 		votingPaper.setElectors(votingPaperElectors);
-		votingPaper.getMapParties().put(partiesId + "", party);
-		votingPaper.getMapGroups().put(groupsId + "", group);
-		voting.getMapVotingPapers().put(votingPapersId + "", votingPaper);
+		if (groupId == -1)
+			votingPaper.getMapParties().put(partyId + "", party);
+		if (groupId != -1)
+			votingPaper.getMapGroups().put(groupId + "", group);
+		voting.getMapVotingPapers().put(votingPaperId + "", votingPaper);
 		voting.setAffluence(date);
 		Candidate candidate1 = new Candidate();
+		candidate1.setId(candidate1Id);
 		candidate1.setElectors(candidate1Electors);
-		party.getMapCandidates().put(candidates1Id + "", candidate1);
+		party.getMapCandidates().put(candidate1Id + "", candidate1);
 		Candidate candidate2 = new Candidate();
+		candidate2.setId(candidate2Id);
 		candidate2.setElectors(candidate2Electors);
-		party.getMapCandidates().put(candidates2Id + "", candidate2);
+		party.getMapCandidates().put(candidate2Id + "", candidate2);
 		document.put("voting", voting);
 		template.insert(document, "voting");
 	}
@@ -129,7 +137,7 @@ public class HistoryTest {
 	private Date createDate(int year, int month, int day, int hour, int minute, int second) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(0);
-		cal.set(year, month, day, hour, minute, second);
+		cal.set(year, month - 1, day, hour, minute, second);
 		Date date = cal.getTime();
 		return date;
 	}

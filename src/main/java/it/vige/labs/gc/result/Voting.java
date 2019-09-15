@@ -7,9 +7,6 @@ import java.util.Map;
 
 import org.bson.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties("mapVotingPapers")
 public class Voting extends TotalElectors {
 
 	public Map<String, VotingPaper> getMapVotingPapers() {
@@ -53,6 +50,7 @@ public class Voting extends TotalElectors {
 		if (votingPapers != null) {
 			document.put("votingPapers", votingPapers.values());
 			VotingPaper.fill(document);
+			document.remove("mapVotingPapers");
 		}
 	}
 

@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.bson.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties("mapGroups,mapParties")
 public class VotingPaper extends Electors {
 
 	public int getBlankPapers() {
@@ -81,13 +78,17 @@ public class VotingPaper extends Electors {
 		votingPapers.forEach(votingPaper -> {
 			Document groups = (Document) votingPaper.get("mapGroups");
 			if (groups != null) {
+				groups.forEach((key, group) -> ((Document) group).put("id", key));
 				votingPaper.put("groups", groups.values());
 				Group.fill(votingPaper);
+				votingPaper.remove("mapGroups");
 			}
 			Document parties = (Document) votingPaper.get("mapParties");
 			if (parties != null) {
+				parties.forEach((key, party) -> ((Document) party).put("id", key));
 				votingPaper.put("parties", parties.values());
 				Party.fill(votingPaper);
+				votingPaper.remove("mapParties");
 			}
 		});
 	}

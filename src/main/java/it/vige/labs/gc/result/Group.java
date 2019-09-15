@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.bson.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties("mapParties")
 public class Group extends Electors {
 
 	public Map<String, Party> getMapParties() {
@@ -48,6 +45,7 @@ public class Group extends Electors {
 				if (parties != null) {
 					group.put("parties", parties.values());
 					Party.fill(group);
+					group.remove("mapParties");
 				}
 			});
 		}

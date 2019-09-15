@@ -6,9 +6,6 @@ import java.util.Map;
 
 import org.bson.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties("mapCandidates")
 public class Party extends Electors {
 
 	public Map<String, Candidate> getMapCandidates() {
@@ -47,6 +44,7 @@ public class Party extends Electors {
 				Document candidates = (Document) party.get("mapCandidates");
 				if (candidates != null)
 					party.put("candidates", candidates.values());
+				party.remove("mapCandidates");
 			});
 		}
 	}
