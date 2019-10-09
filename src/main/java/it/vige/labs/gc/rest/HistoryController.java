@@ -27,10 +27,10 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Iterables;
 import com.mongodb.MongoClient;
 
 import it.vige.labs.gc.result.Voting;
+import it.vige.labs.gc.result.Votings;
 import it.vige.labs.gc.votingpapers.VotingPapers;
 
 @RestController
@@ -110,20 +110,25 @@ public class HistoryController {
 	}
 
 	@GetMapping(value = "/result/{date}")
-	public Voting getResult(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-		Voting voting = (Voting) template(mongoTemplate -> {
+	public Votings getResult(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+		Votings voting = (Votings) template(mongoTemplate -> {
 			Query searchQuery = new Query();
 			searchQuery.addCriteria(Criteria.where("id").regex(dayFormatter.format(date)));
 			List<Document> found = mongoTemplate.find(searchQuery, Document.class, "voting");
 			if (found != null && !found.isEmpty()) {
-				Document document = (Document) Iterables.getLast(found).get("voting");
-				ObjectMapper mapper = new ObjectMapper();
-				Voting result = null;
-				try {
-					Voting.fill(document);
-					result = mapper.readValue(document.toJson(), Voting.class);
-				} catch (IOException e) {
-					logger.error(e.getMessage());
+				Votings result = new Votings();
+				for (Document document : found) {
+					ObjectMapper mapper = new ObjectMapper();
+					try {
+						@SuppressWarnings("unchecked")
+						Document toAdd = ((List<Document>) ((Document) document.get("voting")).get("votings")).get(0);
+						Voting.fill(toAdd);
+						Voting votingToAdd = mapper.readValue(toAdd.toJson(), Voting.class);
+						votingToAdd.setAffluence((Date) ((Document) document.get("voting")).get("affluence"));
+						result.getVotings().add(votingToAdd);
+					} catch (IOException e) {
+						logger.error(e.getMessage());
+					}
 				}
 				return result;
 			} else

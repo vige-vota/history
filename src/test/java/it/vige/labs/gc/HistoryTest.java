@@ -52,7 +52,7 @@ public class HistoryTest {
 				minuteFormatter.format(savedVoting));
 		logger.info(votingPapers + "");
 		addMock(votingPapers);
-		Voting voting = historyController.getResult(date);
+		Voting voting = historyController.getResult(date).getVotings().get(0);
 		Assert.assertNotNull("voting for the current date", voting);
 	}
 
