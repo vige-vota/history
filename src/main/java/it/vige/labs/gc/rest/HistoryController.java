@@ -27,7 +27,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.MongoClient;
 
 import it.vige.labs.gc.result.Voting;
 import it.vige.labs.gc.result.Votings;
@@ -37,8 +36,8 @@ import it.vige.labs.gc.votingpapers.VotingPapers;
 @CrossOrigin(origins = "*")
 public class HistoryController {
 
-	private String DB_HOST = "localhost";
-	private int DB_PORT = 27017;
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
 	private Logger logger = LoggerFactory.getLogger(HistoryController.class);
 
@@ -138,10 +137,7 @@ public class HistoryController {
 	}
 
 	public Object template(Function<MongoTemplate, Object> function) {
-		try (MongoClient mongoClient = new MongoClient(DB_HOST, DB_PORT)) {
-			MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, "history");
-			return function.apply(mongoTemplate);
-		}
+		return function.apply(mongoTemplate);
 	}
 
 	private VotingPapers getVotingPapers() {
