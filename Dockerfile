@@ -12,8 +12,9 @@
 
 FROM openjdk:13.0.1-jdk
 EXPOSE 8643
+COPY /mongodb-org-4.2.repo /etc/yum.repos.d
 RUN yum -y update && \
-	yum -y install sudo mongodb-server && \
+	yum -y install sudo mongodb-org && \
     echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     useradd -u 1000 -G users,wheel -d /home/votinguser --shell /bin/bash -m votinguser && \
     echo "votinguser:secret" | chpasswd && \
@@ -33,7 +34,7 @@ RUN rm -Rf /home/votinguser/.gradle && \
 	mv /workspace/vota/build/libs/history*.jar /workspace/vota.jar && \
 	rm -Rf /workspace/vota && \
 	mkdir /workspace/mongodb && \
-	echo "nohup /usr/bin/mongod --dbpath /workspace/mongodb &" > /workspace/start_mongo.sh && \
+	echo "nohup /usr/bin/mongod --bind_ip 127.0.0.1 --dbpath /workspace/mongodb &" > /workspace/start_mongo.sh && \
 	chmod 775 /workspace/start_mongo.sh && \
     keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /workspace/keystore.p12 -validity 3650 -dname "CN=vota-history.vige.it, OU=Vige, O=Vige, L=Rome, S=Italy, C=IT" -storepass secret -keypass secret
 
