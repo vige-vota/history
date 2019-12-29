@@ -28,6 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.annotations.ApiParam;
 import it.vige.labs.gc.result.Voting;
 import it.vige.labs.gc.result.Votings;
 import it.vige.labs.gc.votingpapers.VotingPapers;
@@ -87,7 +88,8 @@ public class HistoryController {
 	}
 
 	@GetMapping(value = "/votingPapers/{date}")
-	public VotingPapers getVotingPapers(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+	public VotingPapers getVotingPapers(
+			@ApiParam(value = "yyyy-MM-dd", required = true) @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
 		VotingPapers votingPapers = (VotingPapers) template(mongoTemplate -> {
 			Query searchQuery = new Query();
 			searchQuery.addCriteria(Criteria.where("id").is(dayFormatter.format(date)));
@@ -109,7 +111,8 @@ public class HistoryController {
 	}
 
 	@GetMapping(value = "/result/{date}")
-	public Votings getResult(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+	public Votings getResult(
+			@ApiParam(value = "yyyy-MM-dd", required = true) @PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
 		Votings voting = (Votings) template(mongoTemplate -> {
 			Query searchQuery = new Query();
 			searchQuery.addCriteria(Criteria.where("id").regex(dayFormatter.format(date)));

@@ -34,7 +34,7 @@ RUN rm -Rf /home/votinguser/.gradle && \
 	mv /workspace/vota/build/libs/history*.jar /workspace/vota.jar && \
 	rm -Rf /workspace/vota && \
 	mkdir /workspace/mongodb && \
-	echo "nohup /usr/bin/mongod --bind_ip 127.0.0.1 --dbpath /workspace/mongodb &" > /workspace/start_mongo.sh && \
+	echo "nohup /usr/bin/mongod --bind_ip_all --dbpath /workspace/mongodb &" > /workspace/start_mongo.sh && \
 	chmod 775 /workspace/start_mongo.sh && \
     keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /workspace/keystore.p12 -validity 3650 -dname "CN=vota-history.vige.it, OU=Vige, O=Vige, L=Rome, S=Italy, C=IT" -storepass secret -keypass secret
 
