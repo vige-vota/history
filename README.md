@@ -13,7 +13,7 @@ to start a MongoDB instance. Then:
 ```
 java -jar build/libs/history-1.0.0-SNAPSHOT.jar --server.port=8280 --spring.profiles.active=dev
 ```
-and open http://localhost:8280/swagger-ui.html in your browser to connect to the vote application.
+and open http://localhost:8280/swagger-ui/index.html in your browser to connect to the vote application.
 
 If you need to start it on a environment production:
 ```
@@ -47,4 +47,4 @@ To run the image use the command:
 ```
 docker run -d --name vota-history -p8643:8643 vige/vota-history
 ```
-Then open https://vota-history.vige.it:8643/swagger-ui.html to connect to the vote application
+Then open https://vota-history.vige.it:8643/swagger-ui/index.html to connect to the vote application
