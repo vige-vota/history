@@ -1,22 +1,51 @@
 package it.vige.labs.gc;
 
+import static org.keycloak.OAuth2Constants.CLIENT_CREDENTIALS;
+import static org.keycloak.OAuth2Constants.GRANT_TYPE;
+import static org.keycloak.adapters.KeycloakDeploymentBuilder.build;
+import static org.keycloak.adapters.authentication.ClientCredentialsProviderUtils.setClientCredentials;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.bson.Document;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.keycloak.adapters.KeycloakDeployment;
+import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
+import org.keycloak.adapters.spi.KeycloakAccount;
+import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.representations.AccessTokenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import it.vige.labs.gc.rest.HistoryController;
 import it.vige.labs.gc.result.Candidate;
@@ -28,6 +57,7 @@ import it.vige.labs.gc.votingpapers.VotingPapers;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("dev")
 public class HistoryTest {
 
 	private Logger logger = LoggerFactory.getLogger(HistoryTest.class);
@@ -36,6 +66,44 @@ public class HistoryTest {
 
 	@Autowired
 	private HistoryController historyController;
+
+	private static Principal principal = new Principal() {
+
+		@Override
+		public String getName() {
+			return "myprincipal";
+		}
+
+	};
+
+	private static Set<String> roles = new HashSet<String>(
+			Arrays.asList(new String[] { "admin", "votaoperator", "representative", "citizen" }));
+
+	@BeforeClass
+	public static void setAuthentication() throws FileNotFoundException {
+		FileInputStream config = new FileInputStream("src/test/resources/keycloak.json");
+		KeycloakDeployment deployment = build(config);
+		Map<String, String> reqHeaders = new HashMap<>();
+		Map<String, String> reqParams = new HashMap<>();
+		setClientCredentials(deployment, reqHeaders, reqParams);
+		HttpHeaders headers = new HttpHeaders();
+		reqHeaders.forEach((x, y) -> {
+			headers.add(x, y);
+		});
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add(GRANT_TYPE, CLIENT_CREDENTIALS);
+		
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		RestTemplate restTemplate = new RestTemplate();
+		String url = deployment.getTokenUrl();
+		ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(url, HttpMethod.POST, request, AccessTokenResponse.class, reqParams);
+		String token = response.getBody().getToken();
+
+		RefreshableKeycloakSecurityContext securityContext = new RefreshableKeycloakSecurityContext(null, null, token,
+				null, null, null, null);
+		KeycloakAccount account = new SimpleKeycloakAccount(principal, roles, securityContext);
+		SecurityContextHolder.getContext().setAuthentication(new KeycloakAuthenticationToken(account, true));
+	}
 
 	@Test
 	public void history() throws IOException {

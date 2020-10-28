@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM openjdk:15.0.1-jdk
+FROM openjdk:13.0.1-jdk
 EXPOSE 8643
 COPY /mongodb-org-4.4.repo /etc/yum.repos.d
 RUN yum -y update && \
@@ -39,5 +39,5 @@ RUN rm -Rf /home/votinguser/.gradle && \
     keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /workspace/keystore.p12 -validity 3650 -dname "CN=vota-history.vige.it, OU=Vige, O=Vige, L=Rome, S=Italy, C=IT" -storepass secret -keypass secret
 
 CMD /workspace/start_mongo.sh && \
-	java -jar /workspace/vota.jar --server.port=8643 --server.ssl.key-store=/workspace/keystore.p12 --server.ssl.key-store-password=secret --server.ssl.keyStoreType=PKCS12 --server.ssl.keyAlias=tomcat --spring.profiles.active=prod && \
+	java -jar /workspace/vota.jar --server.port=8643 --server.ssl.key-store=/workspace/keystore.p12 --server.ssl.key-store-password=secret --server.ssl.keyAlias=tomcat --spring.profiles.active=prod && \
 	tail -f /dev/null

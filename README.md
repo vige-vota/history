@@ -17,18 +17,15 @@ and open http://localhost:8280/swagger-ui/index.html in your browser to connect 
 
 If you need to start it on a environment production:
 ```
-java -jar build/libs/history-1.0.0-SNAPSHOT.jar --server.port=8643 --server.ssl.key-store=/${your_path}/keystore.p12 --server.ssl.key-store-password=secret --server.ssl.keyStoreType=PKCS12 --server.ssl.keyAlias=tomcat --spring.profiles.active=prod
+java -Djavax.net.ssl.trustStore=./application.keystore -Djavax.net.ssl.trustStorePassword=password -jar build/libs/history-1.0.0-SNAPSHOT.jar --server.ssl.key-store=./application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=./application.keystore --server.ssl.trust-store-password=password --server.port=8643 --spring.profiles.active=prod
 ```
-Before to start the HTTPS you need to create a keystore. You can use the following sample:
-```
-keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /${your_path}/keystore.p12 -validity 3650 -dname "CN=vota-history.vige.it, OU=Vige, O=Vige, L=Rome, S=Italy, C=IT" -storepass secret -keypass secret
-```
-moving the ${your_path} variable to your preferred path where put the keystore and open https://vota-history.vige.it:8643/swagger-ui.html in your browser to connect to the vote application.
 
 Add the following DNS in your /etc/hosts file:
 ```
 $IP_ADDRESS  vota-votingpapers.vige.it
 $IP_ADDRESS  vota-voting.vige.it
+
+and open https://vota-history.vige.it:8643/swagger-ui.html in your browser to connect to the vote application.
 
 ## Eclipse
 
