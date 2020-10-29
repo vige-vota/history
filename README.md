@@ -27,6 +27,25 @@ $IP_ADDRESS  vota-voting.vige.it
 
 and open https://vota-history.vige.it:8643/swagger-ui.html in your browser to connect to the vote application.
 
+## certificates
+
+in a production environment you could move a different ssl certificate and keys. Use this command to generate it:
+```
+keytool -genkey -alias history -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore ./application.keystore -validity 3650 -dname "CN=vota-history.vige.it, OU=Vige, O=Vige, L=Rome, S=Italy, C=IT" -storepass password -keypass password
+```
+You need to export the auth certificate and import it through the command:
+```
+keytool -import -alias auth -file ${exported_auth_certificate}.pem -keystore ./application.keystore -storepass password -keypass password
+```
+Same thing for the votingpapers certificate:
+```
+keytool -import -alias votingpapers -file ${exported_votingpapers_certificate}.pem -keystore ./application.keystore -storepass password -keypass password
+```
+Same thing for the voting certificate:
+```
+keytool -import -alias voting -file ${exported_voting_certificate}.pem -keystore ./application.keystore -storepass password -keypass password
+```
+
 ## Eclipse
 
 To make the project as an Eclipse project go in the root folder of the project and run the following command:
