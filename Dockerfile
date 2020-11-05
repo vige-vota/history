@@ -32,12 +32,12 @@ RUN sudo chown -R votinguser:votinguser /workspace
 RUN cd vota && ./gradlew build -x test
 RUN rm -Rf /home/votinguser/.gradle && \
 	mv /workspace/vota/build/libs/history*.jar /workspace/vota.jar && \
-	rm -Rf /workspace/vota && \
 	mkdir /workspace/mongodb && \
 	echo "nohup /usr/bin/mongod --bind_ip_all --dbpath /workspace/mongodb &" > /workspace/start_mongo.sh && \
 	chmod 775 /workspace/start_mongo.sh && \
-    keytool -genkey -alias tomcat -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore /workspace/keystore.p12 -validity 3650 -dname "CN=vota-history.vige.it, OU=Vige, O=Vige, L=Rome, S=Italy, C=IT" -storepass secret -keypass secret
+	cp /workspace/vota/application.keystore /workspace && \
+	rm -Rf /workspace/vota
 
 CMD /workspace/start_mongo.sh && \
-	java -jar /workspace/vota.jar --server.port=8643 --server.ssl.key-store=/workspace/keystore.p12 --server.ssl.key-store-password=secret --server.ssl.keyAlias=tomcat --spring.profiles.active=prod && \
+	java -Djavax.net.ssl.trustStore=/workspace/application.keystore -Djavax.net.ssl.trustStorePassword=password -jar /workspace/vota.jar --server.port=8643 --server.ssl.key-store=/workspace/application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=/workspace/application.keystore --server.ssl.trust-store-password=password --spring.profiles.active=prod && \
 	tail -f /dev/null
