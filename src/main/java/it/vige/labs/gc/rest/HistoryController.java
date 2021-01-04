@@ -3,6 +3,7 @@ package it.vige.labs.gc.rest;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
@@ -29,8 +30,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.annotations.ApiParam;
+import it.vige.labs.gc.messages.Message;
+import it.vige.labs.gc.messages.Messages;
+import it.vige.labs.gc.messages.Severity;
 import it.vige.labs.gc.result.Voting;
 import it.vige.labs.gc.result.Votings;
+import it.vige.labs.gc.votingpapers.State;
 import it.vige.labs.gc.votingpapers.VotingPapers;
 
 @RestController
@@ -68,23 +73,28 @@ public class HistoryController {
 	private int votingPort;
 
 	@GetMapping(value = "/save")
-	public Date save() {
+	public Messages save() {
 		Date date = new Date();
-		Voting voting = getVoting();
-		voting.setAffluence(date);
-		template(mongoTemplate -> {
-			Document document = new Document();
-			document.put("id", dayFormatter.format(date));
-			document.put("votingPaper", getVotingPapers());
-			mongoTemplate.insert(document, "votingPapers");
+		VotingPapers votingPapers = getVotingPapers();
+		if (votingPapers.getState() == State.VOTE) {
+			Voting voting = getVoting();
+			voting.setAffluence(date);
+			template(mongoTemplate -> {
+				Document document = new Document();
+				document.put("id", dayFormatter.format(date));
+				document.put("votingPaper", votingPapers);
+				mongoTemplate.insert(document, "votingPapers");
 
-			document = new Document();
-			document.put("id", hourFormatter.format(date));
-			document.put("voting", voting);
-			mongoTemplate.insert(document, "voting");
-			return "";
-		});
-		return date;
+				document = new Document();
+				document.put("id", hourFormatter.format(date));
+				document.put("voting", voting);
+				mongoTemplate.insert(document, "voting");
+				return "";
+			});
+		} else
+			return Validator.errorMessage;
+		return new Messages(true,
+				Arrays.asList(new Message[] { new Message(Severity.message, Validator.ok, "all is ok", date) }));
 	}
 
 	@GetMapping(value = "/votingPapers/{date}")

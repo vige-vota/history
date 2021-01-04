@@ -28,11 +28,13 @@ import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.keycloak.adapters.spi.KeycloakAccount;
 import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
+import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessTokenResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -46,13 +48,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import it.vige.labs.gc.messages.Messages;
 import it.vige.labs.gc.rest.HistoryController;
 import it.vige.labs.gc.result.Candidate;
 import it.vige.labs.gc.result.Group;
 import it.vige.labs.gc.result.Party;
 import it.vige.labs.gc.result.Voting;
 import it.vige.labs.gc.result.VotingPaper;
+import it.vige.labs.gc.votingpapers.State;
 import it.vige.labs.gc.votingpapers.VotingPapers;
 
 @RunWith(SpringRunner.class)
@@ -66,6 +72,20 @@ public class HistoryTest {
 
 	@Autowired
 	private HistoryController historyController;
+
+	@Autowired
+	private KeycloakRestTemplate restTemplate;
+
+	@Value("${votingpapers.scheme}")
+	private String votingpapersScheme;
+
+	@Value("${votingpapers.host}")
+	private String votingpapersHost;
+
+	@Value("${votingpapers.port}")
+	private int votingpapersPort;
+
+	private static String token;
 
 	private static Principal principal = new Principal() {
 
@@ -92,17 +112,27 @@ public class HistoryTest {
 		});
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		map.add(GRANT_TYPE, CLIENT_CREDENTIALS);
-		
+
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 		RestTemplate restTemplate = new RestTemplate();
 		String url = deployment.getTokenUrl();
-		ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(url, HttpMethod.POST, request, AccessTokenResponse.class, reqParams);
-		String token = response.getBody().getToken();
+		ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(url, HttpMethod.POST, request,
+				AccessTokenResponse.class, reqParams);
+		token = response.getBody().getToken();
 
 		RefreshableKeycloakSecurityContext securityContext = new RefreshableKeycloakSecurityContext(null, null, token,
 				null, null, null, null);
 		KeycloakAccount account = new SimpleKeycloakAccount(principal, roles, securityContext);
 		SecurityContextHolder.getContext().setAuthentication(new KeycloakAuthenticationToken(account, true));
+	}
+
+	private void setState(State state) {
+		UriComponents uriComponents = UriComponentsBuilder.newInstance().scheme(votingpapersScheme)
+				.host(votingpapersHost).port(votingpapersPort).path("/state?state=" + state).buildAndExpand();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + token);
+		HttpEntity<?> request = new HttpEntity<>(headers);
+		restTemplate.exchange(uriComponents.toString(), HttpMethod.GET, request, Messages.class);
 	}
 
 	@Test
@@ -113,7 +143,10 @@ public class HistoryTest {
 				.template(mongoTemplate -> mongoTemplate.findOne(new Query(), VotingPapers.class, "votingPapers"));
 		Assert.assertNull("is all cleaned", found);
 
-		Date savedVoting = historyController.save();
+		Date savedVoting = historyController.save().getMessages().get(0).getDate();
+		Assert.assertNull("PREPARE state denies the save. No votes saved", savedVoting);
+		setState(State.VOTE);
+		savedVoting = historyController.save().getMessages().get(0).getDate();
 		VotingPapers votingPapers = historyController.getVotingPapers(date);
 		Assert.assertNotNull("voting papers is saved", votingPapers);
 		Assert.assertEquals("saved voting to the following date", minuteFormatter.format(date),
@@ -122,6 +155,7 @@ public class HistoryTest {
 		addMock(votingPapers);
 		Voting voting = historyController.getResult(date).getVotings().get(0);
 		Assert.assertNotNull("voting for the current date", voting);
+		setState(State.PREPARE);
 	}
 
 	public void clean() {
