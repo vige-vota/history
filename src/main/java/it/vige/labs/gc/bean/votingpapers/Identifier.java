@@ -1,4 +1,4 @@
-package it.vige.labs.gc.votingpapers;
+package it.vige.labs.gc.bean.votingpapers;
 
 import org.bson.Document;
 

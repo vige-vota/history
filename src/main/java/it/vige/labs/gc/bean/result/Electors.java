@@ -1,8 +1,6 @@
-package it.vige.labs.gc.result;
+package it.vige.labs.gc.bean.result;
 
-import org.bson.Document;
-
-public class TotalElectors extends Document {
+public class Electors extends Identifier {
 
 	public int getElectors() {
 		return getInteger("electors");

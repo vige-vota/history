@@ -30,13 +30,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.annotations.ApiParam;
+import it.vige.labs.gc.bean.result.Voting;
+import it.vige.labs.gc.bean.result.Votings;
+import it.vige.labs.gc.bean.votingpapers.State;
+import it.vige.labs.gc.bean.votingpapers.VotingPapers;
 import it.vige.labs.gc.messages.Message;
 import it.vige.labs.gc.messages.Messages;
 import it.vige.labs.gc.messages.Severity;
-import it.vige.labs.gc.result.Voting;
-import it.vige.labs.gc.result.Votings;
-import it.vige.labs.gc.votingpapers.State;
-import it.vige.labs.gc.votingpapers.VotingPapers;
 
 @RestController
 @CrossOrigin(origins = "*")

@@ -51,15 +51,15 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import it.vige.labs.gc.bean.result.Candidate;
+import it.vige.labs.gc.bean.result.Group;
+import it.vige.labs.gc.bean.result.Party;
+import it.vige.labs.gc.bean.result.Voting;
+import it.vige.labs.gc.bean.result.VotingPaper;
+import it.vige.labs.gc.bean.votingpapers.State;
+import it.vige.labs.gc.bean.votingpapers.VotingPapers;
 import it.vige.labs.gc.messages.Messages;
 import it.vige.labs.gc.rest.HistoryController;
-import it.vige.labs.gc.result.Candidate;
-import it.vige.labs.gc.result.Group;
-import it.vige.labs.gc.result.Party;
-import it.vige.labs.gc.result.Voting;
-import it.vige.labs.gc.result.VotingPaper;
-import it.vige.labs.gc.votingpapers.State;
-import it.vige.labs.gc.votingpapers.VotingPapers;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -143,6 +143,7 @@ public class HistoryTest {
 				.template(mongoTemplate -> mongoTemplate.findOne(new Query(), VotingPapers.class, "votingPapers"));
 		Assert.assertNull("is all cleaned", found);
 
+		setState(State.PREPARE);
 		Date savedVoting = historyController.save().getMessages().get(0).getDate();
 		Assert.assertNull("PREPARE state denies the save. No votes saved", savedVoting);
 		setState(State.VOTE);

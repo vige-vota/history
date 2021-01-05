@@ -1,4 +1,4 @@
-package it.vige.labs.gc.result;
+package it.vige.labs.gc.bean.result;
 
 import java.util.Collection;
 import java.util.HashMap;
