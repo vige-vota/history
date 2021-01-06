@@ -1,12 +1,13 @@
 package it.vige.labs.gc;
 
-import org.springframework.boot.SpringApplication;
+import static org.springframework.boot.SpringApplication.run;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class JavaAppApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JavaAppApplication.class, args);
+		run(JavaAppApplication.class, args);
 	}
 }

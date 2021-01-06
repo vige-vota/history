@@ -1,9 +1,23 @@
 package it.vige.labs.gc;
 
+import static it.vige.labs.gc.bean.votingpapers.State.PREPARE;
+import static it.vige.labs.gc.bean.votingpapers.State.VOTE;
+import static it.vige.labs.gc.rest.HistoryController.dayFormatter;
+import static it.vige.labs.gc.rest.HistoryController.hourFormatter;
+import static java.util.Arrays.asList;
+import static java.util.Calendar.getInstance;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.keycloak.OAuth2Constants.CLIENT_CREDENTIALS;
 import static org.keycloak.OAuth2Constants.GRANT_TYPE;
 import static org.keycloak.adapters.KeycloakDeploymentBuilder.build;
 import static org.keycloak.adapters.authentication.ClientCredentialsProviderUtils.setClientCredentials;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.security.core.context.SecurityContextHolder.getContext;
+import static org.springframework.web.util.UriComponentsBuilder.newInstance;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,7 +25,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.Document;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +44,6 @@ import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.keycloak.representations.AccessTokenResponse;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,16 +51,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import it.vige.labs.gc.bean.result.Candidate;
 import it.vige.labs.gc.bean.result.Group;
@@ -66,7 +74,7 @@ import it.vige.labs.gc.rest.HistoryController;
 @ActiveProfiles("dev")
 public class HistoryTest {
 
-	private Logger logger = LoggerFactory.getLogger(HistoryTest.class);
+	private Logger logger = getLogger(HistoryTest.class);
 
 	private final static DateFormat minuteFormatter = new SimpleDateFormat("dd-MM-yyyy:HH-mm");
 
@@ -97,7 +105,7 @@ public class HistoryTest {
 	};
 
 	private static Set<String> roles = new HashSet<String>(
-			Arrays.asList(new String[] { "admin", "votaoperator", "representative", "citizen" }));
+			asList(new String[] { "admin", "votaoperator", "representative", "citizen" }));
 
 	@BeforeClass
 	public static void setAuthentication() throws FileNotFoundException {
@@ -116,23 +124,23 @@ public class HistoryTest {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 		RestTemplate restTemplate = new RestTemplate();
 		String url = deployment.getTokenUrl();
-		ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(url, HttpMethod.POST, request,
+		ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(url, POST, request,
 				AccessTokenResponse.class, reqParams);
 		token = response.getBody().getToken();
 
 		RefreshableKeycloakSecurityContext securityContext = new RefreshableKeycloakSecurityContext(null, null, token,
 				null, null, null, null);
 		KeycloakAccount account = new SimpleKeycloakAccount(principal, roles, securityContext);
-		SecurityContextHolder.getContext().setAuthentication(new KeycloakAuthenticationToken(account, true));
+		getContext().setAuthentication(new KeycloakAuthenticationToken(account, true));
 	}
 
 	private void setState(State state) {
-		UriComponents uriComponents = UriComponentsBuilder.newInstance().scheme(votingpapersScheme)
-				.host(votingpapersHost).port(votingpapersPort).path("/state?state=" + state).buildAndExpand();
+		UriComponents uriComponents = newInstance().scheme(votingpapersScheme).host(votingpapersHost)
+				.port(votingpapersPort).path("/state?state=" + state).buildAndExpand();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + token);
 		HttpEntity<?> request = new HttpEntity<>(headers);
-		restTemplate.exchange(uriComponents.toString(), HttpMethod.GET, request, Messages.class);
+		restTemplate.exchange(uriComponents.toString(), GET, request, Messages.class);
 	}
 
 	@Test
@@ -141,22 +149,22 @@ public class HistoryTest {
 		Date date = new Date();
 		Document found = (Document) historyController
 				.template(mongoTemplate -> mongoTemplate.findOne(new Query(), VotingPapers.class, "votingPapers"));
-		Assert.assertNull("is all cleaned", found);
+		assertNull("is all cleaned", found);
 
-		setState(State.PREPARE);
+		setState(PREPARE);
 		Date savedVoting = historyController.save().getMessages().get(0).getDate();
-		Assert.assertNull("PREPARE state denies the save. No votes saved", savedVoting);
-		setState(State.VOTE);
+		assertNull("PREPARE state denies the save. No votes saved", savedVoting);
+		setState(VOTE);
 		savedVoting = historyController.save().getMessages().get(0).getDate();
 		VotingPapers votingPapers = historyController.getVotingPapers(date);
-		Assert.assertNotNull("voting papers is saved", votingPapers);
-		Assert.assertEquals("saved voting to the following date", minuteFormatter.format(date),
+		assertNotNull("voting papers is saved", votingPapers);
+		assertEquals("saved voting to the following date", minuteFormatter.format(date),
 				minuteFormatter.format(savedVoting));
 		logger.info(votingPapers + "");
 		addMock(votingPapers);
 		Voting voting = historyController.getResult(date).getVotings().get(0);
-		Assert.assertNotNull("voting for the current date", voting);
-		setState(State.PREPARE);
+		assertNotNull("voting for the current date", voting);
+		setState(PREPARE);
 	}
 
 	public void clean() {
@@ -200,12 +208,12 @@ public class HistoryTest {
 			int candidate1Id, int candidate2Id, int partyId, int groupId, int votingPaperId) {
 
 		Document document = new Document();
-		document.put("id", HistoryController.dayFormatter.format(date));
+		document.put("id", dayFormatter.format(date));
 		document.put("votingPaper", votingPapers);
 		template.insert(document, "votingPapers");
 
 		document = new Document();
-		document.put("id", HistoryController.hourFormatter.format(date));
+		document.put("id", hourFormatter.format(date));
 		Voting voting = new Voting();
 
 		Party party = new Party();
@@ -238,7 +246,7 @@ public class HistoryTest {
 	}
 
 	private Date createDate(int year, int month, int day, int hour, int minute, int second) {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = getInstance();
 		cal.setTimeInMillis(0);
 		cal.set(year, month - 1, day, hour, minute, second);
 		Date date = cal.getTime();

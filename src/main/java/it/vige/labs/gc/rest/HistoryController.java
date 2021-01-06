@@ -1,5 +1,12 @@
 package it.vige.labs.gc.rest;
 
+import static it.vige.labs.gc.bean.result.Voting.fill;
+import static it.vige.labs.gc.rest.Validator.errorMessage;
+import static it.vige.labs.gc.rest.Validator.ok;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.web.util.UriComponentsBuilder.newInstance;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -10,14 +17,12 @@ import java.util.function.Function;
 
 import org.bson.Document;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +30,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,7 +49,7 @@ public class HistoryController {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	private Logger logger = LoggerFactory.getLogger(HistoryController.class);
+	private Logger logger = getLogger(HistoryController.class);
 
 	public final static DateFormat dayFormatter = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -92,9 +96,9 @@ public class HistoryController {
 				return "";
 			});
 		} else
-			return Validator.errorMessage;
+			return errorMessage;
 		return new Messages(true,
-				Arrays.asList(new Message[] { new Message(Severity.message, Validator.ok, "all is ok", date) }));
+				Arrays.asList(new Message[] { new Message(Severity.message, ok, "all is ok", date) }));
 	}
 
 	@GetMapping(value = "/votingPapers/{date}")
@@ -134,7 +138,7 @@ public class HistoryController {
 					try {
 						@SuppressWarnings("unchecked")
 						Document toAdd = ((List<Document>) ((Document) document.get("voting")).get("votings")).get(0);
-						Voting.fill(toAdd);
+						fill(toAdd);
 						Voting votingToAdd = mapper.readValue(toAdd.toJson(), Voting.class);
 						votingToAdd.setAffluence((Date) ((Document) document.get("voting")).get("affluence"));
 						result.getVotings().add(votingToAdd);
@@ -154,21 +158,20 @@ public class HistoryController {
 	}
 
 	private VotingPapers getVotingPapers() {
-		UriComponents uriComponents = UriComponentsBuilder.newInstance().scheme(votingpapersScheme)
-				.host(votingpapersHost).port(votingpapersPort).path("/votingPapers").buildAndExpand();
+		UriComponents uriComponents = newInstance().scheme(votingpapersScheme).host(votingpapersHost)
+				.port(votingpapersPort).path("/votingPapers").buildAndExpand();
 
-		ResponseEntity<VotingPapers> response = restTemplate.exchange(uriComponents.toString(), HttpMethod.GET, null,
+		ResponseEntity<VotingPapers> response = restTemplate.exchange(uriComponents.toString(), GET, null,
 				VotingPapers.class);
 		VotingPapers votingPapers = response.getBody();
 		return votingPapers;
 	}
 
 	private Voting getVoting() {
-		UriComponents uriComponents = UriComponentsBuilder.newInstance().scheme(votingScheme).host(votingHost)
-				.port(votingPort).path("/result").buildAndExpand();
+		UriComponents uriComponents = newInstance().scheme(votingScheme).host(votingHost).port(votingPort)
+				.path("/result").buildAndExpand();
 
-		ResponseEntity<Voting> response = restTemplate.exchange(uriComponents.toString(), HttpMethod.GET, null,
-				Voting.class);
+		ResponseEntity<Voting> response = restTemplate.exchange(uriComponents.toString(), GET, null, Voting.class);
 		Voting voting = response.getBody();
 		return voting;
 	}
