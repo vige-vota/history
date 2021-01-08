@@ -6,9 +6,9 @@ import static it.vige.labs.gc.rest.HistoryController.dayFormatter;
 import static it.vige.labs.gc.rest.HistoryController.hourFormatter;
 import static java.util.Arrays.asList;
 import static java.util.Calendar.getInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.keycloak.OAuth2Constants.CLIENT_CREDENTIALS;
 import static org.keycloak.OAuth2Constants.GRANT_TYPE;
 import static org.keycloak.adapters.KeycloakDeploymentBuilder.build;
@@ -33,9 +33,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.Document;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
 import org.keycloak.adapters.spi.KeycloakAccount;
@@ -53,7 +52,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -69,7 +67,6 @@ import it.vige.labs.gc.bean.votingpapers.VotingPapers;
 import it.vige.labs.gc.messages.Messages;
 import it.vige.labs.gc.rest.HistoryController;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("dev")
 public class HistoryTest {
@@ -107,7 +104,7 @@ public class HistoryTest {
 	private static Set<String> roles = new HashSet<String>(
 			asList(new String[] { "admin", "votaoperator", "representative", "citizen" }));
 
-	@BeforeClass
+	@BeforeAll
 	public static void setAuthentication() throws FileNotFoundException {
 		FileInputStream config = new FileInputStream("src/test/resources/keycloak.json");
 		KeycloakDeployment deployment = build(config);
@@ -149,21 +146,21 @@ public class HistoryTest {
 		Date date = new Date();
 		Document found = (Document) historyController
 				.template(mongoTemplate -> mongoTemplate.findOne(new Query(), VotingPapers.class, "votingPapers"));
-		assertNull("is all cleaned", found);
+		assertNull(found, "is all cleaned");
 
 		setState(PREPARE);
 		Date savedVoting = historyController.save().getMessages().get(0).getDate();
-		assertNull("PREPARE state denies the save. No votes saved", savedVoting);
+		assertNull(savedVoting, "PREPARE state denies the save. No votes saved");
 		setState(VOTE);
 		savedVoting = historyController.save().getMessages().get(0).getDate();
 		VotingPapers votingPapers = historyController.getVotingPapers(date);
-		assertNotNull("voting papers is saved", votingPapers);
-		assertEquals("saved voting to the following date", minuteFormatter.format(date),
-				minuteFormatter.format(savedVoting));
+		assertNotNull(votingPapers, "voting papers is saved");
+		assertEquals(minuteFormatter.format(date), minuteFormatter.format(savedVoting),
+				"saved voting to the following date");
 		logger.info(votingPapers + "");
 		addMock(votingPapers);
 		Voting voting = historyController.getResult(date).getVotings().get(0);
-		assertNotNull("voting for the current date", voting);
+		assertNotNull(voting, "voting for the current date");
 		setState(PREPARE);
 	}
 
