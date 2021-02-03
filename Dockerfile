@@ -11,7 +11,7 @@
 # limitations under the License.
 
 FROM openjdk:13.0.1-jdk
-EXPOSE 8643
+EXPOSE 8280
 COPY /mongodb-org-4.4.repo /etc/yum.repos.d
 RUN yum -y update && \
 	yum -y install sudo mongodb-org && \
@@ -35,9 +35,8 @@ RUN rm -Rf /home/votinguser/.gradle && \
 	mkdir /workspace/mongodb && \
 	echo "nohup /usr/bin/mongod --bind_ip_all --dbpath /workspace/mongodb &" > /workspace/start_mongo.sh && \
 	chmod 775 /workspace/start_mongo.sh && \
-	cp /workspace/vota/application.keystore /workspace && \
 	rm -Rf /workspace/vota
 
 CMD /workspace/start_mongo.sh && \
-	java -Djavax.net.ssl.trustStore=/workspace/application.keystore -Djavax.net.ssl.trustStorePassword=password -jar /workspace/vota.jar --server.port=8643 --server.ssl.key-store=/workspace/application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=/workspace/application.keystore --server.ssl.trust-store-password=password --spring.profiles.active=prod && \
+	java -jar /workspace/vota.jar --server.port=8280 --spring.profiles.active=docker && \
 	tail -f /dev/null
