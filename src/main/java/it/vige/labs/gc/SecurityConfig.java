@@ -36,6 +36,14 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
+	String ADMIN_ROLE = "admin";
+
+	String CITIZEN_ROLE = "citizen";
+
+	String REPRESENTATIVE_ROLE = "representative";
+
+	String PARTY_ROLE = "party";
+
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
@@ -70,8 +78,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		super.configure(http);
 		http.authorizeRequests().antMatchers("/votingPapers*", "/voting*")
-				.hasAnyRole("admin", "votaoperator", "representative", "citizen").anyRequest().permitAll().and().csrf()
-				.disable();
+				.hasAnyRole(ADMIN_ROLE, PARTY_ROLE, REPRESENTATIVE_ROLE, CITIZEN_ROLE).anyRequest().permitAll().and()
+				.csrf().disable();
 
 	}
 
