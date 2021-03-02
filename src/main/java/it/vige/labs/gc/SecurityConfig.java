@@ -42,10 +42,6 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
 	String REPRESENTATIVE_ROLE = "representative";
 
-	String GROUP_ROLE = "group";
-
-	String PARTY_ROLE = "party";
-
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
@@ -80,7 +76,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		super.configure(http);
 		http.authorizeRequests().antMatchers("/votingPapers*", "/voting*")
-				.hasAnyRole(ADMIN_ROLE, GROUP_ROLE, PARTY_ROLE, REPRESENTATIVE_ROLE, CITIZEN_ROLE).anyRequest()
+				.hasAnyRole(ADMIN_ROLE, REPRESENTATIVE_ROLE, CITIZEN_ROLE).anyRequest()
 				.permitAll().and().csrf().disable();
 
 	}
