@@ -4,67 +4,49 @@ import static it.vige.labs.gc.bean.votingpapers.State.PREPARE;
 import static it.vige.labs.gc.bean.votingpapers.State.VOTE;
 import static it.vige.labs.gc.rest.HistoryController.dayFormatter;
 import static it.vige.labs.gc.rest.HistoryController.hourFormatter;
-import static java.util.Arrays.asList;
 import static java.util.Calendar.getInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.keycloak.OAuth2Constants.CLIENT_CREDENTIALS;
-import static org.keycloak.OAuth2Constants.GRANT_TYPE;
-import static org.keycloak.adapters.KeycloakDeploymentBuilder.build;
-import static org.keycloak.adapters.authentication.ClientCredentialsProviderUtils.setClientCredentials;
+import static org.mockito.Mockito.when;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.security.core.context.SecurityContextHolder.getContext;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.util.UriComponentsBuilder.newInstance;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.Principal;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import org.bson.Document;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.keycloak.adapters.KeycloakDeployment;
-import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
-import org.keycloak.adapters.spi.KeycloakAccount;
-import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
-import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.AccessTokenResponse;
+import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.vige.labs.gc.bean.result.Candidate;
 import it.vige.labs.gc.bean.result.Group;
 import it.vige.labs.gc.bean.result.Party;
 import it.vige.labs.gc.bean.result.Voting;
 import it.vige.labs.gc.bean.result.VotingPaper;
-import it.vige.labs.gc.bean.votingpapers.State;
 import it.vige.labs.gc.bean.votingpapers.VotingPapers;
-import it.vige.labs.gc.messages.Messages;
 import it.vige.labs.gc.rest.HistoryController;
 
 @SpringBootTest
@@ -75,11 +57,13 @@ public class HistoryTest {
 
 	private final static DateFormat minuteFormatter = new SimpleDateFormat("dd-MM-yyyy:HH-mm");
 
+	private Date date;
+
 	@Autowired
 	private HistoryController historyController;
 
-	@Autowired
-	private KeycloakRestTemplate restTemplate;
+	@Mock
+	private RestTemplate restTemplate;
 
 	@Value("${votingpapers.scheme}")
 	private String votingpapersScheme;
@@ -90,68 +74,31 @@ public class HistoryTest {
 	@Value("${votingpapers.port}")
 	private int votingpapersPort;
 
-	private static String token;
+	@Value("${voting.scheme}")
+	private String votingScheme;
 
-	private static Principal principal = new Principal() {
+	@Value("${voting.host}")
+	private String votingHost;
 
-		@Override
-		public String getName() {
-			return "myprincipal";
-		}
+	@Value("${voting.port}")
+	private int votingPort;
 
-	};
+	@Mock
+	private MongoTemplate mongoTemplate;
 
-	private static Set<String> roles = new HashSet<String>(
-			asList(new String[] { "admin", "votaoperator", "representative", "citizen" }));
+	private it.vige.labs.gc.bean.votingpapers.VotingPapers votingPapers;
 
-	@BeforeAll
-	public static void setAuthentication() throws FileNotFoundException {
-		FileInputStream config = new FileInputStream("src/test/resources/keycloak.json");
-		KeycloakDeployment deployment = build(config);
-		Map<String, String> reqHeaders = new HashMap<>();
-		Map<String, String> reqParams = new HashMap<>();
-		setClientCredentials(deployment, reqHeaders, reqParams);
-		HttpHeaders headers = new HttpHeaders();
-		reqHeaders.forEach((x, y) -> {
-			headers.add(x, y);
-		});
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add(GRANT_TYPE, CLIENT_CREDENTIALS);
-
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-		RestTemplate restTemplate = new RestTemplate();
-		String url = deployment.getTokenUrl();
-		ResponseEntity<AccessTokenResponse> response = restTemplate.exchange(url, POST, request,
-				AccessTokenResponse.class, reqParams);
-		token = response.getBody().getToken();
-
-		RefreshableKeycloakSecurityContext securityContext = new RefreshableKeycloakSecurityContext(null, null, token,
-				null, null, null, null);
-		KeycloakAccount account = new SimpleKeycloakAccount(principal, roles, securityContext);
-		getContext().setAuthentication(new KeycloakAuthenticationToken(account, true));
-	}
-
-	private void setState(State state) {
-		UriComponents uriComponents = newInstance().scheme(votingpapersScheme).host(votingpapersHost)
-				.port(votingpapersPort).path("/state?state=" + state).buildAndExpand();
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + token);
-		HttpEntity<?> request = new HttpEntity<>(headers);
-		restTemplate.exchange(uriComponents.toString(), GET, request, Messages.class);
+	@BeforeEach
+	public void init() throws Exception {
+		mock();
 	}
 
 	@Test
 	public void history() throws IOException {
-		clean();
-		Date date = new Date();
-		Document found = (Document) historyController
-				.template(mongoTemplate -> mongoTemplate.findOne(new Query(), VotingPapers.class, "votingPapers"));
-		assertNull(found, "is all cleaned");
-
-		setState(PREPARE);
+		votingPapers.setState(PREPARE);
 		Date savedVoting = historyController.save().getMessages().get(0).getDate();
 		assertNull(savedVoting, "PREPARE state denies the save. No votes saved");
-		setState(VOTE);
+		votingPapers.setState(VOTE);
 		savedVoting = historyController.save().getMessages().get(0).getDate();
 		VotingPapers votingPapers = historyController.getVotingPapers(date);
 		assertNotNull(votingPapers, "voting papers is saved");
@@ -161,15 +108,7 @@ public class HistoryTest {
 		addMock(votingPapers);
 		Voting voting = historyController.getResult(date).getVotings().get(0);
 		assertNotNull(voting, "voting for the current date");
-		setState(PREPARE);
-	}
-
-	public void clean() {
-		historyController.template(mongoTemplate -> {
-			mongoTemplate.remove(new Query(), Voting.class, "voting");
-			mongoTemplate.remove(new Query(), VotingPapers.class, "votingPapers");
-			return true;
-		});
+		votingPapers.setState(PREPARE);
 	}
 
 	public void addMock(VotingPapers votingPapers) {
@@ -248,6 +187,46 @@ public class HistoryTest {
 		cal.set(year, month - 1, day, hour, minute, second);
 		Date date = cal.getTime();
 		return date;
+	}
+
+	private void mock() throws Exception {
+		date = new Date();
+		ObjectMapper objectMapper = new ObjectMapper();
+		InputStream jsonStream = new FileInputStream("src/test/resources/mock/votingpapers.json");
+		votingPapers = objectMapper.readValue(jsonStream, it.vige.labs.gc.bean.votingpapers.VotingPapers.class);
+		jsonStream = new FileInputStream("src/test/resources/mock/voting.json");
+		Voting voting = objectMapper.readValue(jsonStream, Voting.class);
+
+		String urlVotingPapers = newInstance().scheme(votingpapersScheme).host(votingpapersHost).port(votingpapersPort)
+				.path("/votingPapers").buildAndExpand().toString();
+		String votingUrl = newInstance().scheme(votingScheme).host(votingHost).port(votingPort).path("/result")
+				.buildAndExpand().toString();
+
+		when(restTemplate.exchange(urlVotingPapers, GET, null, it.vige.labs.gc.bean.votingpapers.VotingPapers.class))
+				.thenReturn(new ResponseEntity<it.vige.labs.gc.bean.votingpapers.VotingPapers>(votingPapers, OK));
+		when(restTemplate.exchange(votingUrl, GET, null, Voting.class))
+				.thenReturn(new ResponseEntity<Voting>(voting, OK));
+		Query searchQueryVotingPapers = new Query();
+		Query searchQueryVotings = new Query();
+		String formattedDate = dayFormatter.format(date);
+		String formattedHour = hourFormatter.format(date);
+		searchQueryVotingPapers.addCriteria(Criteria.where("id").is(formattedDate));
+		searchQueryVotings.addCriteria(Criteria.where("id").regex(formattedDate));
+		Document documentVotingPapers = new Document();
+		documentVotingPapers.put("id", formattedDate);
+		documentVotingPapers.put("votingPaper", new Document());
+		when(mongoTemplate.findOne(searchQueryVotingPapers, Document.class, "votingPapers"))
+				.thenReturn(documentVotingPapers);
+		Document documentVotings = new Document();
+		documentVotings.put("id", formattedHour);
+		Document documentVoting = new Document();
+		documentVotings.put("voting", documentVoting);
+		List<Document> votings = Arrays.<Document>asList(new Document());
+		documentVoting.put("votings", votings);
+		when(mongoTemplate.find(searchQueryVotings, Document.class, "voting"))
+				.thenReturn(Arrays.<Document>asList(documentVotings));
+		historyController.setRestTemplate(restTemplate);
+		historyController.setMongoTemplate(mongoTemplate);
 	}
 
 }

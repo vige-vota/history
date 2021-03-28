@@ -1,0 +1,134 @@
+{
+  "votings": [
+    {
+      "electors": 3,
+      "votingPapers": [
+        {
+          "id": 0,
+          "electors": 3,
+          "blankPapers": 2,
+          "groups": [],
+          "parties": [
+            {
+              "id": 8,
+              "electors": 1,
+              "candidates": []
+            }
+          ]
+        },
+        {
+          "id": 86,
+          "electors": 3,
+          "blankPapers": 1,
+          "groups": [
+            {
+              "id": 91,
+              "electors": 1,
+              "parties": [
+                {
+                  "id": 92,
+                  "electors": 1,
+                  "candidates": []
+                }
+              ]
+            },
+            {
+              "id": 95,
+              "electors": 1,
+              "parties": [
+                {
+                  "id": 96,
+                  "electors": 1,
+                  "candidates": []
+                }
+              ]
+            }
+          ],
+          "parties": [
+            {
+              "id": 96,
+              "electors": 1,
+              "candidates": []
+            },
+            {
+              "id": 92,
+              "electors": 1,
+              "candidates": []
+            }
+          ]
+        },
+        {
+          "id": 121,
+          "electors": 3,
+          "blankPapers": 2,
+          "groups": [],
+          "parties": [
+            {
+              "id": 124,
+              "electors": 1,
+              "candidates": [
+                {
+                  "id": 145,
+                  "electors": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "electors": 3,
+          "blankPapers": 1,
+          "groups": [
+            {
+              "id": 43,
+              "electors": 1,
+              "parties": [
+                {
+                  "id": 44,
+                  "electors": 1,
+                  "candidates": [
+                    {
+                      "id": 45,
+                      "electors": 1
+                    },
+                    {
+                      "id": 46,
+                      "electors": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "parties": [
+            {
+              "id": 44,
+              "electors": 1,
+              "candidates": [
+                {
+                  "id": 45,
+                  "electors": 1
+                },
+                {
+                  "id": 46,
+                  "electors": 1
+                }
+              ]
+            },
+            {
+              "id": 28,
+              "electors": 1,
+              "candidates": [
+                {
+                  "id": 31,
+                  "electors": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 package it.vige.labs.gc.rest;
 
 import static it.vige.labs.gc.bean.result.Voting.fill;
+import static it.vige.labs.gc.bean.votingpapers.State.VOTE;
+import static it.vige.labs.gc.messages.Severity.message;
 import static it.vige.labs.gc.rest.Validator.errorMessage;
 import static it.vige.labs.gc.rest.Validator.ok;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -36,11 +38,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiParam;
 import it.vige.labs.gc.bean.result.Voting;
 import it.vige.labs.gc.bean.result.Votings;
-import it.vige.labs.gc.bean.votingpapers.State;
 import it.vige.labs.gc.bean.votingpapers.VotingPapers;
 import it.vige.labs.gc.messages.Message;
 import it.vige.labs.gc.messages.Messages;
-import it.vige.labs.gc.messages.Severity;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -80,7 +80,7 @@ public class HistoryController {
 	public Messages save() {
 		Date date = new Date();
 		VotingPapers votingPapers = getVotingPapers();
-		if (votingPapers.getState() == State.VOTE) {
+		if (votingPapers.getState() == VOTE) {
 			Voting voting = getVoting();
 			voting.setAffluence(date);
 			template(mongoTemplate -> {
@@ -97,8 +97,7 @@ public class HistoryController {
 			});
 		} else
 			return errorMessage;
-		return new Messages(true,
-				Arrays.asList(new Message[] { new Message(Severity.message, ok, "all is ok", date) }));
+		return new Messages(true, Arrays.asList(new Message[] { new Message(message, ok, "all is ok", date) }));
 	}
 
 	@GetMapping(value = "/votingPapers/{date}")
@@ -174,5 +173,13 @@ public class HistoryController {
 		ResponseEntity<Voting> response = restTemplate.exchange(uriComponents.toString(), GET, null, Voting.class);
 		Voting voting = response.getBody();
 		return voting;
+	}
+
+	public void setRestTemplate(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
+
+	public void setMongoTemplate(MongoTemplate mongoTemplate) {
+		this.mongoTemplate = mongoTemplate;
 	}
 }
