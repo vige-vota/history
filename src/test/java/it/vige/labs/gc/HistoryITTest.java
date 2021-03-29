@@ -98,7 +98,7 @@ public class HistoryITTest {
 
 		@Override
 		public String getName() {
-			return "myprincipal";
+			return "77803bc2-6533-424c-bdb1-277c9dd49d11";
 		}
 
 	};
