@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bson.Document;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.keycloak.adapters.KeycloakDeployment;
 import org.keycloak.adapters.RefreshableKeycloakSecurityContext;
@@ -79,6 +81,10 @@ public class HistoryITTest {
 
 	private final static DateFormat minuteFormatter = new SimpleDateFormat("dd-MM-yyyy:HH-mm");
 
+	private static String PATH_TO_GRADLE_PROJECT = "./";
+	private static String GRADLEW_EXECUTABLE = "gradlew";
+	private static String BALNK = " ";
+
 	@Autowired
 	private HistoryController historyController;
 
@@ -106,6 +112,26 @@ public class HistoryITTest {
 	};
 
 	private Set<String> roles = new HashSet<String>(asList(new String[] { ADMIN_ROLE, CITIZEN_ROLE }));
+
+	@BeforeAll
+	public static void start() {
+		String command = PATH_TO_GRADLE_PROJECT + GRADLEW_EXECUTABLE + BALNK + "startMongoDb";
+		try {
+			Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@AfterAll
+	public static void end() {
+		String command = PATH_TO_GRADLE_PROJECT + GRADLEW_EXECUTABLE + BALNK + "stopMongoDb";
+		try {
+			Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	private void setAuthentication() throws FileNotFoundException {
 		FileInputStream config = new FileInputStream("src/test/resources/keycloak.json");

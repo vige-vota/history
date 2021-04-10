@@ -49,7 +49,3 @@ test {
         excludeTestsMatching '*ITTest'
     }
 }
-
-task integrationTest(type: Test) {
-    runWithMongoDb = true
-}
