@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM openjdk:13.0.1-jdk
+FROM openjdk:13-jdk
 EXPOSE 8280
 COPY /mongodb-org-4.4.repo /etc/yum.repos.d
 RUN yum -y update && \
