@@ -198,7 +198,7 @@ public class HistoryTest {
 		Voting voting = objectMapper.readValue(jsonStream, Voting.class);
 
 		String urlVotingPapers = newInstance().scheme(votingpapersScheme).host(votingpapersHost).port(votingpapersPort)
-				.path("/votingPapers").buildAndExpand().toString();
+				.path("/votingPapers?all=ok").buildAndExpand().toString();
 		String votingUrl = newInstance().scheme(votingScheme).host(votingHost).port(votingPort).path("/result")
 				.buildAndExpand().toString();
 

@@ -158,7 +158,7 @@ public class HistoryController {
 
 	private VotingPapers getVotingPapers() {
 		UriComponents uriComponents = newInstance().scheme(votingpapersScheme).host(votingpapersHost)
-				.port(votingpapersPort).path("/votingPapers").buildAndExpand();
+				.port(votingpapersPort).path("/votingPapers?all=ok").buildAndExpand();
 
 		ResponseEntity<VotingPapers> response = restTemplate.exchange(uriComponents.toString(), GET, null,
 				VotingPapers.class);
