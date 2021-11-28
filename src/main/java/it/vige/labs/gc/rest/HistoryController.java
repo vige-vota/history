@@ -17,10 +17,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
+import javax.annotation.PostConstruct;
+
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -75,6 +78,17 @@ public class HistoryController {
 
 	@Value("${voting.port}")
 	private int votingPort;
+
+	@Autowired
+	private Environment environment;
+	
+	@PostConstruct
+	public void init() {
+		String[] profiles = environment.getActiveProfiles();
+		if (profiles.length == 0 || profiles[0].equals("dev")) {
+			
+		}
+	}
 
 	@GetMapping(value = "/save")
 	public Messages save() {
