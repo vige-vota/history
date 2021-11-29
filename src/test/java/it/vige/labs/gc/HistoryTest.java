@@ -15,7 +15,6 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.util.UriComponentsBuilder.newInstance;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -94,7 +93,7 @@ public class HistoryTest {
 	}
 
 	@Test
-	public void history() throws IOException {
+	public void history() throws Exception {
 		votingPapers.setState(PREPARE);
 		Date savedVoting = historyController.save().getMessages().get(0).getDate();
 		assertNull(savedVoting, "PREPARE state denies the save. No votes saved");
@@ -217,6 +216,7 @@ public class HistoryTest {
 		documentVotingPapers.put("votingPaper", new Document());
 		when(mongoTemplate.findOne(searchQueryVotingPapers, Document.class, "votingPapers"))
 				.thenReturn(documentVotingPapers);
+		when(mongoTemplate.insert(documentVotingPapers, "votingPapers")).thenReturn(documentVotingPapers);
 		Document documentVotings = new Document();
 		documentVotings.put("id", formattedHour);
 		Document documentVoting = new Document();
@@ -225,6 +225,7 @@ public class HistoryTest {
 		documentVoting.put("votings", votings);
 		when(mongoTemplate.find(searchQueryVotings, Document.class, "voting"))
 				.thenReturn(Arrays.<Document>asList(documentVotings));
+		when(mongoTemplate.insert(documentVotings, "voting")).thenReturn(documentVotings);
 		historyController.setRestTemplate(restTemplate);
 		historyController.setMongoTemplate(mongoTemplate);
 	}
