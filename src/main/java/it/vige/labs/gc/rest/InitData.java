@@ -35,7 +35,7 @@ public class InitData {
 		}
 	}
 
-	public void start() throws Exception {
+	void start() throws Exception {
 
 		save("11-05-1999", "11-06-12", "voting_1.json");
 		save("11-05-1999", "14-01-12", "voting_2.json");
