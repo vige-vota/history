@@ -1,63 +1,186 @@
 {
 	"votings": [
 		{
-			"electors": 31,
+			"electors": 5,
 			"votingPapers": [
 				{
-					"id": 362,
-					"electors": 32,
-					"blankPapers": 2,
-					"groups": [],
-					"parties": [
-						{
-							"id": 370,
-							"electors": 14,
-							"candidates": []
-						}
-					]
-				},
-				{
-					"id": 373,
-					"electors": 35,
-					"blankPapers": 1,
+					"id": 0,
+					"electors": 5,
+					"blankPapers": 0,
 					"groups": [
 						{
-							"id": 378,
-							"electors": 16,
+							"id": 5,
+							"electors": 2,
 							"parties": [
 								{
-									"id": 379,
+									"id": 6,
 									"electors": 1,
-									"candidates": []
+									"candidates": [
+									]
+								},
+								{
+									"id": 10,
+									"electors": 1,
+									"candidates": [
+									]
 								}
 							]
 						},
 						{
-							"id": 382,
+							"id": 7,
 							"electors": 1,
 							"parties": [
 								{
-									"id": 383,
+									"id": 8,
 									"electors": 1,
-									"candidates": []
+									"candidates": [
+									]
 								}
+							]
+						},
+						{
+							"id": 9,
+							"electors": 1,
+							"parties": [
+								{
+									"id": 6,
+									"electors": 1,
+									"candidates": [
+									]
+								}
+							]
+						}
+					],
+					"parties": [
+						{
+							"id": 3,
+							"electors": 1,
+							"candidates": [
+							]
+						},
+						{
+							"id": 6,
+							"electors": 2,
+							"candidates": [
+							]
+						},
+						{
+							"id": 8,
+							"electors": 1,
+							"candidates": [
+							]
+						},
+						{
+							"id": 10,
+							"electors": 1,
+							"candidates": [
 							]
 						}
 					]
 				},
 				{
-					"id": 408,
-					"electors": 35,
-					"blankPapers": 2,
-					"groups": [],
+					"id": 86,
+					"electors": 5,
+					"blankPapers": 1,
+					"groups": [
+						{
+							"id": 89,
+							"electors": 2,
+							"parties": [
+								{
+									"id": 90,
+									"electors": 2,
+									"candidates": [
+									]
+								}
+							]
+						},
+						{
+							"id": 95,
+							"electors": 2,
+							"parties": [
+								{
+									"id": 96,
+									"electors": 1,
+									"candidates": [
+									]
+								},
+								{
+									"id": 97,
+									"electors": 1,
+									"candidates": [
+									]
+								}
+							]
+						}
+					],
 					"parties": [
 						{
-							"id": 425,
-							"electors": 16,
+							"id": 96,
+							"electors": 1,
+							"candidates": [
+							]
+						},
+						{
+							"id": 97,
+							"electors": 1,
+							"candidates": [
+							]
+						},
+						{
+							"id": 90,
+							"electors": 2,
+							"candidates": [
+							]
+						}
+					]
+				},
+				{
+					"id": 121,
+					"electors": 5,
+					"blankPapers": 2,
+					"groups": [
+					],
+					"parties": [
+						{
+							"id": 240,
+							"electors": 1,
 							"candidates": [
 								{
-									"id": 426,
-									"electors": 17
+									"id": 306,
+									"electors": 1
+								},
+								{
+									"id": 307,
+									"electors": 1
+								}
+							]
+						},
+						{
+							"id": 243,
+							"electors": 1,
+							"candidates": [
+								{
+									"id": 261,
+									"electors": 1
+								},
+								{
+									"id": 262,
+									"electors": 1
+								}
+							]
+						},
+						{
+							"id": 123,
+							"electors": 1,
+							"candidates": [
+								{
+									"id": 132,
+									"electors": 1
+								},
+								{
+									"id": 133,
+									"electors": 1
 								}
 							]
 						}
