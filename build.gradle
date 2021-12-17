@@ -21,7 +21,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.sourcemuse.mongo'
 
 group = 'it.vige'
-version = '1.0.0'
+version = '1.1.0-SNAPSHOT'
 
 sourceCompatibility = 13
 
