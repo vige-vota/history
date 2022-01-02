@@ -1,0 +1,254 @@
+{
+	"votings": [
+		{
+			"electors": 9,
+			"votingPapers": [
+				{
+					"id": 86,
+					"electors": 9,
+					"blankPapers": 4,
+					"groups": [
+						{
+							"id": 87,
+							"electors": 3,
+							"parties": [
+								{
+									"id": 88,
+									"electors": 2,
+									"candidates": [
+									]
+								}
+							]
+						},
+						{
+							"id": 91,
+							"electors": 2,
+							"parties": [
+								{
+									"id": 92,
+									"electors": 2,
+									"candidates": [
+									]
+								}
+							]
+						}
+					],
+					"parties": [
+						{
+							"id": 88,
+							"electors": 2,
+							"candidates": [
+							]
+						},
+						{
+							"id": 92,
+							"electors": 2,
+							"candidates": [
+							]
+						}
+					]
+				},
+				{
+					"id": 121,
+					"electors": 9,
+					"blankPapers": 3,
+					"groups": [
+					],
+					"parties": [
+						{
+							"id": 131,
+							"electors": 1,
+							"candidates": [
+							]
+						},
+						{
+							"id": 125,
+							"electors": 4,
+							"candidates": [
+								{
+									"id": 165,
+									"electors": 1
+								},
+								{
+									"id": 158,
+									"electors": 1
+								},
+								{
+									"id": 159,
+									"electors": 1
+								}
+							]
+						},
+						{
+							"id": 238,
+							"electors": 1,
+							"candidates": [
+								{
+									"id": 336,
+									"electors": 1
+								},
+								{
+									"id": 337,
+									"electors": 1
+								}
+							]
+						}
+					]
+				},
+				{
+					"id": 11,
+					"electors": 9,
+					"blankPapers": 1,
+					"groups": [
+						{
+							"id": 43,
+							"electors": 3,
+							"parties": [
+								{
+									"id": 72,
+									"electors": 1,
+									"candidates": [
+										{
+											"id": 74,
+											"electors": 1
+										}
+									]
+								},
+								{
+									"id": 44,
+									"electors": 1,
+									"candidates": [
+										{
+											"id": 45,
+											"electors": 1
+										},
+										{
+											"id": 46,
+											"electors": 1
+										}
+									]
+								}
+							]
+						},
+						{
+							"id": 27,
+							"electors": 2,
+							"parties": [
+								{
+									"id": 28,
+									"electors": 2,
+									"candidates": [
+										{
+											"id": 34,
+											"electors": 1
+										},
+										{
+											"id": 30,
+											"electors": 2
+										},
+										{
+											"id": 31,
+											"electors": 1
+										}
+									]
+								}
+							]
+						},
+						{
+							"id": 12,
+							"electors": 1,
+							"parties": [
+								{
+									"id": 13,
+									"electors": 1,
+									"candidates": [
+										{
+											"id": 14,
+											"electors": 1
+										},
+										{
+											"id": 15,
+											"electors": 1
+										}
+									]
+								}
+							]
+						}
+					],
+					"parties": [
+						{
+							"id": 72,
+							"electors": 1,
+							"candidates": [
+								{
+									"id": 74,
+									"electors": 1
+								}
+							]
+						},
+						{
+							"id": 58,
+							"electors": 2,
+							"candidates": [
+								{
+									"id": 59,
+									"electors": 2
+								},
+								{
+									"id": 61,
+									"electors": 1
+								}
+							]
+						},
+						{
+							"id": 44,
+							"electors": 1,
+							"candidates": [
+								{
+									"id": 45,
+									"electors": 1
+								},
+								{
+									"id": 46,
+									"electors": 1
+								}
+							]
+						},
+						{
+							"id": 28,
+							"electors": 2,
+							"candidates": [
+								{
+									"id": 34,
+									"electors": 1
+								},
+								{
+									"id": 30,
+									"electors": 2
+								},
+								{
+									"id": 31,
+									"electors": 1
+								}
+							]
+						},
+						{
+							"id": 13,
+							"electors": 1,
+							"candidates": [
+								{
+									"id": 14,
+									"electors": 1
+								},
+								{
+									"id": 15,
+									"electors": 1
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

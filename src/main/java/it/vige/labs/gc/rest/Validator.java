@@ -5,6 +5,7 @@ import static java.util.Arrays.asList;
 
 import org.springframework.stereotype.Component;
 
+import it.vige.labs.gc.bean.votingpapers.VotingPapers;
 import it.vige.labs.gc.messages.Message;
 import it.vige.labs.gc.messages.Messages;
 
@@ -15,4 +16,8 @@ public class Validator {
 
 	public final static Messages errorMessage = new Messages(false,
 			asList(new Message[] { new Message(error, "Generic error", "Validation not ok") }));
+
+	public boolean validate(VotingPapers votingPapers) {
+		return votingPapers.validate();
+	}
 }

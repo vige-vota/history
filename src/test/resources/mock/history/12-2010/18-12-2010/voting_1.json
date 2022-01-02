@@ -1,0 +1,60 @@
+{
+	"votings": [
+		{
+			"electors": 1,
+			"votingPapers": [
+				{
+					"id": 0,
+					"electors": 1,
+					"blankPapers": 0,
+					"groups": [
+						{
+							"id": 1,
+							"electors": 1,
+							"parties": [
+								{
+									"id": 4,
+									"electors": 1,
+									"candidates": [
+									]
+								}
+							]
+						}
+					],
+					"parties": [
+						{
+							"id": 4,
+							"electors": 1,
+							"candidates": [
+							]
+						}
+					]
+				},
+				{
+					"id": 121,
+					"electors": 1,
+					"blankPapers": 0,
+					"groups": [
+					],
+					"parties": [
+						{
+							"id": 125,
+							"electors": 1,
+							"candidates": [
+							]
+						}
+					]
+				},
+				{
+					"id": 11,
+					"electors": 1,
+					"blankPapers": 1,
+					"groups": [
+					],
+					"parties": [
+					]
+				}
+			]
+		}
+	]
+}

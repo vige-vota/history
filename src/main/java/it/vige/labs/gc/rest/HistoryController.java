@@ -1,7 +1,6 @@
 package it.vige.labs.gc.rest;
 
 import static it.vige.labs.gc.bean.result.Voting.fill;
-import static it.vige.labs.gc.bean.votingpapers.State.VOTE;
 import static it.vige.labs.gc.messages.Severity.message;
 import static it.vige.labs.gc.rest.Validator.errorMessage;
 import static it.vige.labs.gc.rest.Validator.ok;
@@ -59,6 +58,9 @@ public class HistoryController {
 	@Autowired
 	private RestTemplate restTemplate;
 
+	@Autowired
+	private Validator validator;
+
 	@Value("${votingpapers.scheme}")
 	private String votingpapersScheme;
 
@@ -94,7 +96,7 @@ public class HistoryController {
 		init();
 		Date date = new Date();
 		VotingPapers votingPapers = getVotingPapers();
-		if (votingPapers.getState() == VOTE) {
+		if (validator.validate(votingPapers)) {
 			Voting voting = getVoting();
 			return save(date, votingPapers, voting);
 		} else

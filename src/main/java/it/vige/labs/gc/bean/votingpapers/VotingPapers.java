@@ -1,12 +1,14 @@
 package it.vige.labs.gc.bean.votingpapers;
 
+import static it.vige.labs.gc.bean.votingpapers.State.VOTE;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties("_class")
-public class VotingPapers {
+public class VotingPapers implements Validation {
 
 	private State state;
 
@@ -26,5 +28,12 @@ public class VotingPapers {
 
 	public void setState(State state) {
 		this.state = state;
+	}
+
+	@Override
+	public boolean validate() {
+		boolean result = state == VOTE;
+		return result && votingPapers.parallelStream()
+				.allMatch(votingPaper -> votingPaper.validate());
 	}
 }

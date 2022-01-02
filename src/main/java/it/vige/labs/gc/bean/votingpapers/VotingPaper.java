@@ -1,8 +1,13 @@
 package it.vige.labs.gc.bean.votingpapers;
 
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
+
+import java.util.Date;
 import java.util.List;
 
-public class VotingPaper extends Identifier {
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class VotingPaper extends Identifier implements Validation {
 
 	private int maxCandidates;
 
@@ -10,9 +15,15 @@ public class VotingPaper extends Identifier {
 
 	private String type;
 
+	@JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	private Date startingDate;
+
+	@JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	private Date endingDate;
+
 	private boolean disjointed;
-    
-    private int zone = -1;
+
+	private int zone = -1;
 
 	private List<Group> groups;
 
@@ -40,6 +51,22 @@ public class VotingPaper extends Identifier {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Date getStartingDate() {
+		return startingDate;
+	}
+
+	public void setStartingDate(Date startingDate) {
+		this.startingDate = startingDate;
+	}
+
+	public Date getEndingDate() {
+		return endingDate;
+	}
+
+	public void setEndingDate(Date endingDate) {
+		this.endingDate = endingDate;
 	}
 
 	public boolean isDisjointed() {
@@ -72,5 +99,11 @@ public class VotingPaper extends Identifier {
 
 	public void setParties(List<Party> parties) {
 		this.parties = parties;
+	}
+
+	@Override
+	public boolean validate() {
+		Date date = new Date();
+		return startingDate.compareTo(endingDate) < 0 && endingDate.compareTo(date) > 0;
 	}
 }

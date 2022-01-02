@@ -1,0 +1,136 @@
+{
+	"votings": [
+		{
+			"electors": 8,
+			"votingPapers": [
+				{
+					"id": 0,
+					"electors": 8,
+					"blankPapers": 2,
+					"groups": [
+						{
+							"id": 1,
+							"electors": 3,
+							"parties": [
+								{
+									"id": 4,
+									"electors": 2,
+									"candidates": [
+									]
+								},
+								{
+									"id": 6,
+									"electors": 1,
+									"candidates": [
+									]
+								}
+							]
+						},
+						{
+							"id": 7,
+							"electors": 1,
+							"parties": [
+								{
+									"id": 6,
+									"electors": 1,
+									"candidates": [
+									]
+								}
+							]
+						},
+						{
+							"id": 9,
+							"electors": 1,
+							"parties": [
+								{
+									"id": 10,
+									"electors": 1,
+									"candidates": [
+									]
+								}
+							]
+						}
+					],
+					"parties": [
+						{
+							"id": 3,
+							"electors": 1,
+							"candidates": [
+							]
+						},
+						{
+							"id": 4,
+							"electors": 2,
+							"candidates": [
+							]
+						},
+						{
+							"id": 6,
+							"electors": 2,
+							"candidates": [
+							]
+						},
+						{
+							"id": 10,
+							"electors": 1,
+							"candidates": [
+							]
+						}
+					]
+				},
+				{
+					"id": 121,
+					"electors": 8,
+					"blankPapers": 5,
+					"groups": [
+					],
+					"parties": [
+						{
+							"id": 130,
+							"electors": 1,
+							"candidates": [
+								{
+									"id": 210,
+									"electors": 1
+								},
+								{
+									"id": 211,
+									"electors": 1
+								}
+							]
+						},
+						{
+							"id": 243,
+							"electors": 1,
+							"candidates": [
+								{
+									"id": 261,
+									"electors": 1
+								},
+								{
+									"id": 262,
+									"electors": 1
+								}
+							]
+						},
+						{
+							"id": 125,
+							"electors": 1,
+							"candidates": [
+							]
+						}
+					]
+				},
+				{
+					"id": 11,
+					"electors": 8,
+					"blankPapers": 8,
+					"groups": [
+					],
+					"parties": [
+					]
+				}
+			]
+		}
+	]
+}
