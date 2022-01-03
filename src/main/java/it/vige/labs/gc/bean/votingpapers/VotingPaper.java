@@ -2,6 +2,9 @@ package it.vige.labs.gc.bean.votingpapers;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -9,16 +12,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class VotingPaper extends Identifier implements Validation {
 
+	public final static String VOTING_PAPER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+
 	private int maxCandidates;
 
 	private String color;
 
 	private String type;
 
-	@JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = STRING, pattern = VOTING_PAPER_DATE_FORMAT)
 	private Date startingDate;
 
-	@JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+	@JsonFormat(shape = STRING, pattern = VOTING_PAPER_DATE_FORMAT)
 	private Date endingDate;
 
 	private boolean disjointed;
@@ -104,6 +109,17 @@ public class VotingPaper extends Identifier implements Validation {
 	@Override
 	public boolean validate() {
 		Date date = new Date();
-		return startingDate.compareTo(endingDate) < 0 && endingDate.compareTo(date) > 0;
+		DateFormat dateFormat = new SimpleDateFormat(VOTING_PAPER_DATE_FORMAT);
+		Date startingDate;
+		Date endingDate;
+		boolean result = false;
+		try {
+			startingDate = dateFormat.parse(getString("startingDate"));
+			endingDate = dateFormat.parse(getString("endingDate"));
+			result = startingDate.compareTo(endingDate) < 0 && endingDate.compareTo(date) > 0;
+		} catch (ParseException e) {
+			result = false;
+		}
+		return result;
 	}
 }

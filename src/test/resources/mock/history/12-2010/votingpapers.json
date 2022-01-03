@@ -3,8 +3,8 @@
 	"votingPapers": [
 		{
 			"id": 0,
-			"startingDate": "2021-11-14T09:00:00",
-			"endingDate": "2021-11-14T22:00:00",
+			"startingDate": "2010-12-18T09:00:00",
+			"endingDate": "2010-12-19T22:00:00",
 			"name": "Polling 1",
 			"maxCandidates": 0,
 			"color": "ffaa11",
@@ -85,8 +85,8 @@
 		},
 		{
 			"id": 11,
-			"startingDate": "2021-11-14T09:00:00",
-			"endingDate": "2021-11-14T23:00:00",
+			"startingDate": "2010-12-18T09:00:00",
+			"endingDate": "2010-12-19T23:00:00",
 			"name": "Polling 2",
 			"maxCandidates": 2,
 			"color": "fe0055",
@@ -548,8 +548,8 @@
 		},
 		{
 			"id": 121,
-			"startingDate": "2021-11-14T09:00:00",
-			"endingDate": "2021-11-14T18:00:00",
+			"startingDate": "2010-12-18T09:00:00",
+			"endingDate": "2010-12-19T18:00:00",
 			"name": "Europe 2",
 			"maxCandidates": 3,
 			"color": "0055dd",
