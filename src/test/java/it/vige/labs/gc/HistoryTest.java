@@ -4,7 +4,6 @@ import static it.vige.labs.gc.bean.votingpapers.State.PREPARE;
 import static it.vige.labs.gc.bean.votingpapers.State.VOTE;
 import static it.vige.labs.gc.rest.HistoryController.dayFormatter;
 import static it.vige.labs.gc.rest.HistoryController.hourFormatter;
-import static java.util.Calendar.DATE;
 import static java.util.Calendar.getInstance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -100,12 +99,6 @@ public class HistoryTest {
 		assertNull(savedVoting, "PREPARE state denies the save. No votes saved");
 		votingPapers.setState(VOTE);
 		savedVoting = historyController.save().getMessages().get(0).getDate();
-		assertNull(savedVoting, "Ending date is expired");
-		votingPapers.getVotingPapers().forEach(e -> {
-			if (e.getInteger("zone") != null && e.getInteger("zone") == 6542276)
-				addDates(e, -1, 3);
-		});
-		savedVoting = historyController.save().getMessages().get(0).getDate();
 		VotingPapers votingPapers = historyController.getVotingPapers(date);
 		assertNotNull(votingPapers, "voting papers is saved");
 		assertEquals(minuteFormatter.format(date), minuteFormatter.format(savedVoting),
@@ -200,12 +193,6 @@ public class HistoryTest {
 		ObjectMapper objectMapper = new ObjectMapper();
 		InputStream jsonStream = new FileInputStream("src/test/resources/mock/votingpapers.json");
 		votingPapers = objectMapper.readValue(jsonStream, it.vige.labs.gc.bean.votingpapers.VotingPapers.class);
-		votingPapers.getVotingPapers().forEach(e -> {
-			if (e.getInteger("zone") == null || e.getInteger("zone") != 6542276)
-				addDates(e, -1, 3);
-			else
-				addDates(e, -3, -2);
-		});
 		jsonStream = new FileInputStream("src/test/resources/mock/voting.json");
 		Voting voting = objectMapper.readValue(jsonStream, Voting.class);
 
@@ -241,19 +228,6 @@ public class HistoryTest {
 		when(mongoTemplate.insert(documentVotings, "voting")).thenReturn(documentVotings);
 		historyController.setRestTemplate(restTemplate);
 		historyController.setMongoTemplate(mongoTemplate);
-	}
-
-	private void addDates(it.vige.labs.gc.bean.votingpapers.VotingPaper votingPaper, int startingDays, int endingDays) {
-		Date startingDate = addDays(new Date(), startingDays);
-		votingPaper.setStartingDate(startingDate);
-		votingPaper.setEndingDate(addDays(startingDate, endingDays));
-	}
-
-	private Date addDays(Date date, int days) {
-		Calendar cal = getInstance();
-		cal.setTime(date);
-		cal.add(DATE, days); // minus number would decrement the days
-		return cal.getTime();
 	}
 
 }

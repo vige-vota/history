@@ -2,15 +2,12 @@ package it.vige.labs.gc.bean.votingpapers;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-public class VotingPaper extends Identifier implements Validation {
+public class VotingPaper extends Identifier {
 
 	public final static String VOTING_PAPER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
@@ -104,22 +101,5 @@ public class VotingPaper extends Identifier implements Validation {
 
 	public void setParties(List<Party> parties) {
 		this.parties = parties;
-	}
-
-	@Override
-	public boolean validate() {
-		Date date = new Date();
-		DateFormat dateFormat = new SimpleDateFormat(VOTING_PAPER_DATE_FORMAT);
-		Date startingDate;
-		Date endingDate;
-		boolean result = false;
-		try {
-			startingDate = dateFormat.parse(getString("startingDate"));
-			endingDate = dateFormat.parse(getString("endingDate"));
-			result = startingDate.compareTo(endingDate) < 0 && endingDate.compareTo(date) > 0;
-		} catch (ParseException e) {
-			result = false;
-		}
-		return result;
 	}
 }

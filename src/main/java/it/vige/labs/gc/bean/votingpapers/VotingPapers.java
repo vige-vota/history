@@ -32,8 +32,6 @@ public class VotingPapers implements Validation {
 
 	@Override
 	public boolean validate() {
-		boolean result = state == VOTE;
-		return result && votingPapers.parallelStream()
-				.allMatch(votingPaper -> votingPaper.validate());
+		return state == VOTE;
 	}
 }
