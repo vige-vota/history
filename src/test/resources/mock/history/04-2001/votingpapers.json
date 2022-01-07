@@ -3,8 +3,12 @@
 	"votingPapers": [
 		{
 			"id": 0,
-			"startingDate": "2001-04-13T09:00:00",
-			"endingDate": "2001-04-13T22:00:00",
+			"dates": [
+				{
+					"startingDate": "2001-04-13T09:00:00",
+					"endingDate": "2001-04-13T22:00:00"
+				}
+			],
 			"name": "VOTING PAPER 5",
 			"maxCandidates": 0,
 			"color": "ffbbaa",
@@ -85,8 +89,12 @@
 		},
 		{
 			"id": 86,
-			"startingDate": "2001-04-13T09:00:00",
-			"endingDate": "2001-04-13T22:00:00",
+			"dates": [
+				{
+					"startingDate": "2001-04-13T09:00:00",
+					"endingDate": "2001-04-13T22:00:00"
+				}
+			],
 			"name": "VOTING PAPER 7",
 			"maxCandidates": 0,
 			"color": "23ff55",
@@ -325,8 +333,12 @@
 		},
 		{
 			"id": 121,
-			"startingDate": "2001-04-13T09:00:00",
-			"endingDate": "2001-04-13T18:00:00",
+			"dates": [
+				{
+					"startingDate": "2001-04-13T09:00:00",
+					"endingDate": "2001-04-13T18:00:00"
+				}
+			],
 			"name": "EUROPE",
 			"maxCandidates": 3,
 			"color": "4155ff",

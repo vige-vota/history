@@ -3,8 +3,12 @@
 	"votingPapers": [
 		{
 			"id": 0,
-			"startingDate": "2021-10-19T09:00:00",
-			"endingDate": "2021-10-20T22:00:00",
+			"dates": [
+				{
+					"startingDate": "2021-10-19T09:00:00",
+					"endingDate": "2021-10-20T22:00:00"
+				}
+			],
 			"name": "Comunale 2",
 			"maxCandidates": 0,
 			"color": "ffaaaa",
@@ -85,8 +89,12 @@
 		},
 		{
 			"id": 86,
-			"startingDate": "2021-10-19T09:00:00",
-			"endingDate": "2021-10-20T22:00:00",
+			"dates": [
+				{
+					"startingDate": "2021-10-19T09:00:00",
+					"endingDate": "2021-10-20T22:00:00"
+				}
+			],
 			"name": "Nazionali 2",
 			"maxCandidates": 0,
 			"color": "ffff55",

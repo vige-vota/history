@@ -3,8 +3,12 @@
 	"votingPapers": [
 		{
 			"id": 0,
-			"startingDate": "2021-11-14T09:00:00",
-			"endingDate": "2021-11-14T22:00:00",
+			"dates": [
+				{
+					"startingDate": "2021-11-14T09:00:00",
+					"endingDate": "2021-11-14T22:00:00"
+				}
+			],
 			"disjointed": true,
 			"zone": 6542276,
 			"groups": [
@@ -50,8 +54,12 @@
 		},
 		{
 			"id": 11,
-			"startingDate": "2021-11-14T09:00:00",
-			"endingDate": "2021-11-14T23:00:00",
+			"dates": [
+				{
+					"startingDate": "2021-11-14T09:00:00",
+					"endingDate": "2021-11-14T23:00:00"
+				}
+			],
 			"disjointed": true,
 			"maxCandidates": 2,
 			"zone": 2523228,
@@ -360,8 +368,12 @@
 		},
 		{
 			"id": 86,
-			"startingDate": "2021-11-14T09:00:00",
-			"endingDate": "2021-11-14T22:00:00",
+			"dates": [
+				{
+					"startingDate": "2021-11-14T09:00:00",
+					"endingDate": "2021-11-14T22:00:00"
+				}
+			],
 			"groups": [
 				{
 					"id": 87,
@@ -491,8 +503,12 @@
 		},
 		{
 			"id": 121,
-			"startingDate": "2021-11-14T09:00:00",
-			"endingDate": "2021-11-14T18:00:00",
+			"dates": [
+				{
+					"startingDate": "2021-11-14T09:00:00",
+					"endingDate": "2021-11-14T18:00:00"
+				}
+			],
 			"maxCandidates": 3,
 			"parties": [
 				{
