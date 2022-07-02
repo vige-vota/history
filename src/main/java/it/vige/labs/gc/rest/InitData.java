@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ public class InitData {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Autowired
+	@Lazy
 	private HistoryController historyController;
 
 	private void save(String date, String hour, String votingJsonFile) throws Exception {

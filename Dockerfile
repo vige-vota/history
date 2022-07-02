@@ -12,7 +12,7 @@
 
 FROM openjdk:18-jdk
 EXPOSE 8280
-COPY /mongodb-org-4.4.repo /etc/yum.repos.d
+COPY /mongodb-org-5.0.repo /etc/yum.repos.d
 RUN yum -y update && \
 	yum -y install sudo mongodb-org && \
     echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
