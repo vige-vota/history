@@ -199,7 +199,20 @@
 							]
 						}
 					]
-				}
+				},
+        		{
+          			"id": 260,
+         			"electors": 1,
+          			"blankPapers": 0,
+          			"groups": [],
+          			"parties": [
+            			{
+              				"id": 363,
+              				"electors": 1,
+              				"candidates": []
+            			}
+          			]
+        		}
 			]
 		}
 	]

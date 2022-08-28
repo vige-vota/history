@@ -247,7 +247,25 @@
 							]
 						}
 					]
-				}
+				},
+        		{
+          			"id": 260,
+          			"electors": 2,
+          			"blankPapers": 0,
+          			"groups": [],
+          			"parties": [
+           				 {
+              				"id": 363,
+              				"electors": 1,
+              				"candidates": []
+            			 },
+            			 {
+              				"id": 364,
+              				"electors": 1,
+              				"candidates": []
+            			 }
+          			]
+        		}
 			]
 		}
 	]

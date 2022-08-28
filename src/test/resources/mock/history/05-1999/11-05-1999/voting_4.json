@@ -333,7 +333,25 @@
 							]
 						}
 					]
-				}
+				},
+        		{
+          			"id": 260,
+         			"electors": 3,
+          			"blankPapers": 0,
+          			"groups": [],
+          			"parties": [
+            			{
+              				"id": 364,
+              				"electors": 2,
+              				"candidates": []
+            			},
+            			{
+              				"id": 365,
+              				"electors": 1,
+              				"candidates": []
+           				}
+          			]
+        		}
 			]
 		}
 	]
