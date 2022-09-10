@@ -341,12 +341,12 @@
           			"groups": [],
           			"parties": [
             			{
-              				"id": 364,
+              				"id": 363,
               				"electors": 2,
               				"candidates": []
             			},
             			{
-              				"id": 365,
+              				"id": 364,
               				"electors": 1,
               				"candidates": []
            				}
