@@ -10,17 +10,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM openjdk:18-jdk
+FROM arm64v8/eclipse-temurin:18-jdk
 EXPOSE 8280
-COPY /mongodb-org-5.0.repo /etc/yum.repos.d
-RUN yum -y update && \
-	yum -y install sudo mongodb-org && \
-    echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-    useradd -u 1000 -G users,wheel -d /home/votinguser --shell /bin/bash -m votinguser && \
+COPY /mongodb-org-5.0.repo /etc/apt-get.repos.d
+RUN apt-get -y update && \
+	apt-get -y install sudo mongodb-org && \
+    echo "%adm ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    useradd -u 1000 -G users,adm -d /home/votinguser --shell /bin/bash -m votinguser && \
     echo "votinguser:secret" | chpasswd && \
-    yum -y update && \
-    yum clean all && \
-    yum -y autoremove
+    apt-get -y update && \
+    apt-get clean all && \
+    apt-get -y autoremove
 
 USER votinguser
 
