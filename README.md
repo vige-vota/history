@@ -11,13 +11,13 @@ Start the Java application with the following commands:
 ```
 to start a MongoDB instance. Then:
 ```
-java -jar build/libs/history-1.1.0.jar --server.port=8280 --spring.profiles.active=dev
+java -jar build/libs/history-1.1.1-SNAPSHOT.jar --server.port=8280 --spring.profiles.active=dev
 ```
 and open [http://localhost:8280/swagger-ui/index.html](http://localhost:8280/swagger-ui/index.html) in your browser to connect to the vote application.
 
 If you need to start it on a environment production:
 ```
-java -Djavax.net.ssl.trustStore=./application.keystore -Djavax.net.ssl.trustStorePassword=password -jar build/libs/history-1.1.0.jar --server.ssl.key-store=./application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=./application.keystore --server.ssl.trust-store-password=password --server.port=8643 --spring.profiles.active=prod
+java -Djavax.net.ssl.trustStore=./application.keystore -Djavax.net.ssl.trustStorePassword=password -jar build/libs/history-1.1.1-SNAPSHOT.jar --server.ssl.key-store=./application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=./application.keystore --server.ssl.trust-store-password=password --server.port=8643 --spring.profiles.active=prod
 ```
 
 Add the following DNS in your /etc/hosts file:
