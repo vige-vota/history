@@ -10,17 +10,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM arm64v8/eclipse-temurin:18-jdk
+FROM arm64v8/mongo:5.0
 EXPOSE 8280
-COPY /mongodb-org-5.0.repo /etc/apt-get.repos.d
 RUN apt-get -y update && \
-	apt-get -y install sudo mongodb-org && \
-    echo "%adm ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+	apt-get -y install sudo && \
+	apt-get -y install software-properties-common && \
+	apt-get -y install curl && \
+	echo "%adm ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     useradd -u 1000 -G users,adm -d /home/votinguser --shell /bin/bash -m votinguser && \
     echo "votinguser:secret" | chpasswd && \
     apt-get -y update && \
     apt-get clean all && \
-    apt-get -y autoremove
+    apt-get -y autoremove && \
+    chmod -R 777 /data
 
 USER votinguser
 
@@ -28,15 +30,20 @@ ENV TERM xterm
 
 WORKDIR /workspace
 COPY / /workspace/vota
-RUN sudo chown -R votinguser:votinguser /workspace
-RUN cd vota && ./gradlew build -x test
+RUN sudo chown -R votinguser:votinguser /workspace && \
+	curl -O https://download.java.net/java/GA/jdk18.0.2.1/db379da656dc47308e138f21b33976fa/1/GPL/openjdk-18.0.2.1_linux-aarch64_bin.tar.gz && \
+	tar xvzf openjdk-18.0.2.1_linux-aarch64_bin.tar.gz && \
+	rm ./openjdk-18.0.2.1_linux-aarch64_bin.tar.gz
+RUN export JAVA_HOME=/workspace/jdk-18.0.2.1 && \
+	export PATH=$PATH:/workspace/jdk-18.0.2.1/bin && \
+	cd vota && ./gradlew build -x test
 RUN rm -Rf /home/votinguser/.gradle && \
-	mv /workspace/vota/build/libs/history*.jar /workspace/vota.jar && \
-	mkdir /workspace/mongodb && \
-	echo "nohup /usr/bin/mongod --bind_ip_all --dbpath /workspace/mongodb &" > /workspace/start_mongo.sh && \
-	chmod 775 /workspace/start_mongo.sh && \
+	rm /workspace/vota/build/libs/history-*-plain.jar && \
+	mv /workspace/vota/build/libs/history-*.jar /workspace/vota.jar && \
+	mv /workspace/vota/build/resources/main/docker/startmongo.sh /workspace/startmongo.sh && \
+	chmod 777 /workspace/startmongo.sh && \
 	rm -Rf /workspace/vota
 
-CMD /workspace/start_mongo.sh && \
-	java -jar /workspace/vota.jar --server.port=8280 --spring.profiles.active=docker && \
+CMD /workspace/startmongo.sh && \
+	/workspace/jdk-18.0.2.1/bin/java -jar /workspace/vota.jar --server.port=8280 --spring.profiles.active=docker && \
 	tail -f /dev/null

@@ -6,6 +6,7 @@ import static it.vige.labs.gc.rest.Validator.errorMessage;
 import static it.vige.labs.gc.rest.Validator.ok;
 import static java.util.Arrays.asList;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.web.util.UriComponentsBuilder.newInstance;
 
@@ -22,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -110,7 +110,7 @@ public class HistoryController {
 		init();
 		VotingPapers votingPapers = (VotingPapers) template(mongoTemplate -> {
 			Query searchQuery = new Query();
-			searchQuery.addCriteria(Criteria.where("id").is(dayFormatter.format(date)));
+			searchQuery.addCriteria(where("id").is(dayFormatter.format(date)));
 			Document found = mongoTemplate.findOne(searchQuery, Document.class, "votingPapers");
 			if (found != null) {
 				Document document = (Document) found.get("votingPaper");
@@ -143,7 +143,7 @@ public class HistoryController {
 	Votings getResult(Date date, DateFormat formatter) throws Exception {
 		Votings voting = (Votings) template(mongoTemplate -> {
 			Query searchQuery = new Query();
-			searchQuery.addCriteria(Criteria.where("id").regex(formatter.format(date)));
+			searchQuery.addCriteria(where("id").regex(formatter.format(date)));
 			List<Document> found = mongoTemplate.find(searchQuery, Document.class, "voting");
 			if (found != null && !found.isEmpty()) {
 				Votings result = new Votings();
