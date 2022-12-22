@@ -11,7 +11,7 @@
 # limitations under the License.
 
 FROM arm64v8/mongo:5.0
-EXPOSE 8280
+EXPOSE 8643
 RUN apt-get -y update && \
 	apt-get -y install sudo && \
 	apt-get -y install software-properties-common && \
