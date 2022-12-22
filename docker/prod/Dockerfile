@@ -31,19 +31,20 @@ ENV TERM xterm
 WORKDIR /workspace
 COPY / /workspace/vota
 RUN sudo chown -R votinguser:votinguser /workspace && \
-	curl -O https://download.java.net/java/GA/jdk18.0.2.1/db379da656dc47308e138f21b33976fa/1/GPL/openjdk-18.0.2.1_linux-aarch64_bin.tar.gz && \
-	tar xvzf openjdk-18.0.2.1_linux-aarch64_bin.tar.gz && \
-	rm ./openjdk-18.0.2.1_linux-aarch64_bin.tar.gz
-RUN export JAVA_HOME=/workspace/jdk-18.0.2.1 && \
-	export PATH=$PATH:/workspace/jdk-18.0.2.1/bin && \
+	curl -O https://download.java.net/java/GA/jdk19.0.1/afdd2e245b014143b62ccb916125e3ce/10/GPL/openjdk-19.0.1_linux-x64_bin.tar.gz.sha256 && \
+	tar xvzf openjdk-19.0.1_linux-aarch64_bin.tar.gz && \
+	rm ./openjdk-19.0.1_linux-aarch64_bin.tar.gz
+RUN export JAVA_HOME=/workspace/jdk-19.0.1 && \
+	export PATH=$PATH:/workspace/jdk-19.0.1/bin && \
 	cd vota && ./gradlew build -x test
 RUN rm -Rf /home/votinguser/.gradle && \
 	rm /workspace/vota/build/libs/history-*-plain.jar && \
 	mv /workspace/vota/build/libs/history-*.jar /workspace/vota.jar && \
-	mv /workspace/vota/build/resources/main/docker/startmongo.sh /workspace/startmongo.sh && \
+	mv /workspace/vota/docker/startmongo.sh /workspace/startmongo.sh && \
 	chmod 777 /workspace/startmongo.sh && \
+	mv /workspace/vota/docker/prod/volume/cert/application.keystore /workspace/application.keystore && \
 	rm -Rf /workspace/vota
 
 CMD /workspace/startmongo.sh && \
-	/workspace/jdk-18.0.2.1/bin/java -jar /workspace/vota.jar --server.port=8280 --spring.profiles.active=docker && \
+	/workspace/jdk-19.0.1/bin/java -Djavax.net.ssl.trustStore=/workspace/application.keystore -jar /workspace/vota.jar --server.port=8643 --spring.profiles.active=prod --server.ssl.key-store=/workspace/application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=./application.keystore --server.ssl.trust-store-password=password && \
 	tail -f /dev/null

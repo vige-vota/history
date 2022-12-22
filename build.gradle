@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.7.1'
+        springBootVersion = '2.7.5'
     }
     repositories {
         mavenCentral()
@@ -23,7 +23,7 @@ apply plugin: 'com.sourcemuse.mongo'
 group = 'it.vige'
 version = '1.1.1-SNAPSHOT'
 
-sourceCompatibility = 18
+sourceCompatibility = 19
 
 mongo {
 	mongoVersion = '5.0.6'
@@ -39,7 +39,7 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-security')
     implementation('io.springfox:springfox-boot-starter:3.0.0')
     implementation('org.apache.httpcomponents:httpclient')
-    implementation('org.keycloak:keycloak-spring-boot-starter:15.1.1')
+    implementation('org.keycloak:keycloak-spring-boot-starter:20.0.2')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
