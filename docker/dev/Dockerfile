@@ -31,7 +31,7 @@ ENV TERM xterm
 WORKDIR /workspace
 COPY / /workspace/vota
 RUN sudo chown -R votinguser:votinguser /workspace && \
-	curl -O https://download.java.net/java/GA/jdk19.0.1/afdd2e245b014143b62ccb916125e3ce/10/GPL/openjdk-19.0.1_linux-x64_bin.tar.gz.sha256 && \
+	curl -O https://download.java.net/java/GA/jdk19.0.1/afdd2e245b014143b62ccb916125e3ce/10/GPL/openjdk-19.0.1_linux-aarch64_bin.tar.gz && \
 	tar xvzf openjdk-19.0.1_linux-aarch64_bin.tar.gz && \
 	rm ./openjdk-19.0.1_linux-aarch64_bin.tar.gz
 RUN export JAVA_HOME=/workspace/jdk-19.0.1 && \
