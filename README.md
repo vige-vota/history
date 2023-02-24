@@ -7,7 +7,7 @@ To build the application run the command inside the history folder
 ```
 Start the Java application with the following commands:
 ```
-./gradlew startMongoDb
+docker run -p27017:27017 arm64v8/mongo:5.0
 ```
 to start a MongoDB instance. Then:
 ```
