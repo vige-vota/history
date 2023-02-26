@@ -40,6 +40,8 @@ RUN export JAVA_HOME=/workspace/jdk-19.0.1 && \
 RUN rm -Rf /home/votinguser/.gradle && \
 	rm /workspace/vota/build/libs/history-*-plain.jar && \
 	mv /workspace/vota/build/libs/history-*.jar /workspace/vota.jar && \
+	mkdir -p /workspace/src/test/resources/mock && \
+	mv /workspace/vota/src/test/resources/mock/history /workspace/src/test/resources/mock/history && \
 	mv /workspace/vota/docker/startmongo.sh /workspace/startmongo.sh && \
 	chmod 777 /workspace/startmongo.sh && \
 	rm -Rf /workspace/vota
