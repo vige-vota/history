@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM arm64v8/mongo:5.0
+FROM arm64v8/mongo:6.0
 EXPOSE 8643
 RUN apt-get -y update && \
 	apt-get -y install sudo && \
