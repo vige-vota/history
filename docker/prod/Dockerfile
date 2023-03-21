@@ -46,5 +46,5 @@ RUN rm -Rf /home/votinguser/.gradle && \
 	rm -Rf /workspace/vota
 
 CMD /workspace/startmongo.sh && \
-	/workspace/jdk-19.0.1/bin/java -Djavax.net.ssl.trustStore=/workspace/application.keystore -jar /workspace/vota.jar --server.port=8643 --spring.profiles.active=prod --server.ssl.key-store=/workspace/application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=./application.keystore --server.ssl.trust-store-password=password && \
+	/workspace/jdk-19.0.1/bin/java -Djavax.net.ssl.trustStore=/workspace/application.keystore -Djavax.net.ssl.trustStorePassword=password -jar /workspace/vota.jar --server.port=8643 --spring.profiles.active=prod --server.ssl.key-store=/workspace/application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=./application.keystore --server.ssl.trust-store-password=password && \
 	tail -f /dev/null
