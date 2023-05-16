@@ -31,11 +31,11 @@ ENV TERM xterm
 WORKDIR /workspace
 COPY / /workspace/vota
 RUN sudo chown -R votinguser:votinguser /workspace && \
-	curl -O https://download.java.net/java/GA/jdk19.0.1/afdd2e245b014143b62ccb916125e3ce/10/GPL/openjdk-19.0.1_linux-aarch64_bin.tar.gz && \
-	tar xvzf openjdk-19.0.1_linux-aarch64_bin.tar.gz && \
-	rm ./openjdk-19.0.1_linux-aarch64_bin.tar.gz
-RUN export JAVA_HOME=/workspace/jdk-19.0.1 && \
-	export PATH=$PATH:/workspace/jdk-19.0.1/bin && \
+	curl -O https://download.java.net/java/GA/jdk20.0.1/b4887098932d415489976708ad6d1a4b/9/GPL/openjdk-20.0.1_linux-aarch64_bin.tar.gz && \
+	tar xvzf openjdk-20.0.1_linux-aarch64_bin.tar.gz && \
+	rm ./openjdk-20.0.1_linux-aarch64_bin.tar.gz
+RUN export JAVA_HOME=/workspace/jdk-20.0.1 && \
+	export PATH=$PATH:/workspace/jdk-20.0.1/bin && \
 	cd vota && ./gradlew build -x test
 RUN rm -Rf /home/votinguser/.gradle && \
 	rm /workspace/vota/build/libs/history-*-plain.jar && \
@@ -47,5 +47,5 @@ RUN rm -Rf /home/votinguser/.gradle && \
 	rm -Rf /workspace/vota
 
 CMD /workspace/startmongo.sh && \
-	/workspace/jdk-19.0.1/bin/java -jar /workspace/vota.jar --server.port=8280 --spring.profiles.active=dev && \
+	/workspace/jdk-20.0.1/bin/java -jar /workspace/vota.jar --server.port=8280 --spring.profiles.active=dev && \
 	tail -f /dev/null

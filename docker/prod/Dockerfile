@@ -34,11 +34,11 @@ VOLUME /data
 WORKDIR /workspace
 COPY / /workspace/vota
 RUN sudo chown -R votinguser:votinguser /workspace && \
-	curl -O https://download.java.net/java/GA/jdk19.0.1/afdd2e245b014143b62ccb916125e3ce/10/GPL/openjdk-19.0.1_linux-aarch64_bin.tar.gz && \
-	tar xvzf openjdk-19.0.1_linux-aarch64_bin.tar.gz && \
-	rm ./openjdk-19.0.1_linux-aarch64_bin.tar.gz
-RUN export JAVA_HOME=/workspace/jdk-19.0.1 && \
-	export PATH=$PATH:/workspace/jdk-19.0.1/bin && \
+	curl -O https://download.java.net/java/GA/jdk20.0.1/b4887098932d415489976708ad6d1a4b/9/GPL/openjdk-20.0.1_linux-aarch64_bin.tar.gz && \
+	tar xvzf openjdk-20.0.1_linux-aarch64_bin.tar.gz && \
+	rm ./openjdk-20.0.1_linux-aarch64_bin.tar.gz
+RUN export JAVA_HOME=/workspace/jdk-20.0.1 && \
+	export PATH=$PATH:/workspace/jdk-20.0.1/bin && \
 	cd vota && ./gradlew build -x test && \
 	mkdir /workspace/cert
 RUN rm -Rf /home/votinguser/.gradle && \
@@ -50,5 +50,5 @@ RUN rm -Rf /home/votinguser/.gradle && \
 	rm -Rf /workspace/vota
 
 CMD /workspace/startmongo.sh && \
-	/workspace/jdk-19.0.1/bin/java -Djavax.net.ssl.trustStore=/workspace/cert/application.keystore -Djavax.net.ssl.trustStorePassword=$PASSWORD_STORE -jar /workspace/vota.jar --server.port=8643 --spring.profiles.active=prod --server.ssl.key-store=/workspace/cert/application.keystore --server.ssl.key-store-password=$PASSWORD_STORE --server.ssl.trust-store=/workspace/cert/application.keystore --server.ssl.trust-store-password=$PASSWORD_STORE && \
+	/workspace/jdk-20.0.1/bin/java -Djavax.net.ssl.trustStore=/workspace/cert/application.keystore -Djavax.net.ssl.trustStorePassword=$PASSWORD_STORE -jar /workspace/vota.jar --server.port=8643 --spring.profiles.active=prod --server.ssl.key-store=/workspace/cert/application.keystore --server.ssl.key-store-password=$PASSWORD_STORE --server.ssl.trust-store=/workspace/cert/application.keystore --server.ssl.trust-store-password=$PASSWORD_STORE && \
 	tail -f /dev/null
