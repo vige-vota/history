@@ -11,13 +11,13 @@ docker run -p27017:27017 arm64v8/mongo:6.0
 ```
 to start a MongoDB instance. Then:
 ```
-java -jar build/libs/history-1.1.1.jar --server.port=8280 --spring.profiles.active=dev
+java -jar build/libs/history-1.1.2.jar --server.port=8280 --spring.profiles.active=dev
 ```
 and open [http://vota-history.vige.it:8280/swagger-ui/index.html](http://vota-history.vige.it:8280/swagger-ui/index.html) in your browser to connect to the vote application.
 
 If you need to start it on a environment production:
 ```
-java -Djavax.net.ssl.trustStore=./docker/prod/volume/cert/application.keystore -Djavax.net.ssl.trustStorePassword=password -jar build/libs/history-1.1.1.jar --server.ssl.key-store=./docker/prod/volume/cert/application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=./docker/prod/volume/cert/application.keystore --server.ssl.trust-store-password=password --server.port=8643 --spring.profiles.active=prod
+java -Djavax.net.ssl.trustStore=./docker/prod/volume/cert/application.keystore -Djavax.net.ssl.trustStorePassword=password -jar build/libs/history-1.1.2.jar --server.ssl.key-store=./docker/prod/volume/cert/application.keystore --server.ssl.key-store-password=password --server.ssl.trust-store=./docker/prod/volume/cert/application.keystore --server.ssl.trust-store-password=password --server.port=8643 --spring.profiles.active=prod
 ```
 
 Add the following DNS in your /etc/hosts file:
